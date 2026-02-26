@@ -51,6 +51,11 @@ import Dashboard from './pages/Dashboard';
 import Sites from './pages/Sites';
 import Buildings from './pages/Buildings';
 import Rooms from './pages/Rooms';
+import Occupants from './pages/Occupants';
+import Reservations from './pages/Reservations';
+import History from './pages/History';
+import SearchPage from './pages/SearchPage';
+import Admin from './pages/Admin';
 import __Layout from './Layout.jsx';
 
 
@@ -59,6 +64,11 @@ export const PAGES = {
     "Sites": Sites,
     "Buildings": Buildings,
     "Rooms": Rooms,
+    "Occupants": Occupants,
+    "Reservations": Reservations,
+    "History": History,
+    "SearchPage": SearchPage,
+    "Admin": Admin,
 }
 
 export const pagesConfig = {
