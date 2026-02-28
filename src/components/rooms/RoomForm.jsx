@@ -10,8 +10,8 @@ const facilities = [
   { key: 'internet', label: 'Internet' },
 ];
 
-const inputClass = "w-full px-4 py-2.5 rounded-xl bg-white border border-slate-300 text-black text-sm focus:outline-none focus:ring-2 focus:ring-cyan-400/50";
-const labelClass = "text-sm font-semibold text-black mb-1.5 block";
+const inputClass = "w-full px-3 py-2.5 rounded-md bg-black border border-slate-600 text-white text-sm placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-cyan-500/50 focus:border-cyan-500/60 transition-colors";
+const labelClass = "text-xs font-semibold text-slate-300 uppercase tracking-wide mb-0.5 block";
 
 export default function RoomForm({ room, sites = [], buildings = [], onSubmit, onCancel }) {
   const [form, setForm] = useState({
