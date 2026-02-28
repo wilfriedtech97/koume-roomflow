@@ -3,7 +3,7 @@ import GlassInput from '../ui-custom/GlassInput';
 import GlassSelect from '../ui-custom/GlassSelect';
 import GlassTextarea from '../ui-custom/GlassTextarea';
 import GlassButton from '../ui-custom/GlassButton';
-import { Search, CheckCircle2, Wifi, Droplets, ShowerHead, Fan, Lightbulb, BathIcon, Users, ArrowLeft, Calendar, Infinity } from 'lucide-react';
+import { Search, CheckCircle2, Wifi, Droplets, ShowerHead, Fan, Lightbulb, Bath, Users, ArrowLeft, Calendar, Infinity } from 'lucide-react';
 
 const ROOM_TYPE_MAP = {
   standard: 'Classique',
