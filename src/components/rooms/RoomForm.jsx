@@ -38,7 +38,7 @@ export default function RoomForm({ room, sites = [], buildings = [], onSubmit, o
       ...form,
       site_name: site?.name || '',
       building_name: building?.name || '',
-      bed_count: Number(form.bed_count) || 1,
+      capacity: Number(form.capacity) || 1,
     });
   };
 
@@ -68,7 +68,7 @@ export default function RoomForm({ room, sites = [], buildings = [], onSubmit, o
           { value: 'occupied', label: 'Occupied' },
           { value: 'unavailable', label: 'Unavailable' },
         ]} />
-        <GlassInput label="Bed Count" type="number" min="1" value={form.bed_count} onChange={e => setForm({ ...form, bed_count: e.target.value })} />
+        <GlassInput label="Nombre de personnes" type="number" min="1" value={form.capacity} onChange={e => setForm({ ...form, capacity: e.target.value })} />
       </div>
       <div>
         <label className="text-sm font-medium text-slate-300 mb-2 block">Facilities</label>
