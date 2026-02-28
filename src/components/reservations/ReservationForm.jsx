@@ -108,8 +108,6 @@ export default function ReservationForm({ reservation, rooms = [], allReservatio
   };
 
   const handleSearch = () => {
-    if (!criteria.check_in_date) { setError('Veuillez saisir la date d\'arrivée.'); return; }
-    if (criteria.reservation_type === 'determined' && !criteria.check_out_date) { setError('Veuillez saisir la date de départ.'); return; }
     setError('');
     setStep(2);
   };
