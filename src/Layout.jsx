@@ -66,7 +66,7 @@ export default function Layout({ children, currentPageName }) {
   }
 
   return (
-    <div className="min-h-screen bg-[#050810] flex">
+    <div className="min-h-screen flex" style={{background:'var(--bg-primary)'}}>
       {/* Mobile overlay */}
       <AnimatePresence>
         {sidebarOpen && (
