@@ -3,7 +3,7 @@ import GlassInput from '../ui-custom/GlassInput';
 import GlassSelect from '../ui-custom/GlassSelect';
 import GlassTextarea from '../ui-custom/GlassTextarea';
 import GlassButton from '../ui-custom/GlassButton';
-import { Search, CheckCircle2, Wifi, Droplets, ShowerHead, Fan, Lightbulb, Bath, Users, ArrowLeft, Calendar, Infinity } from 'lucide-react';
+import { Search, CheckCircle2, Wifi, Droplets, ShowerHead, Fan, Lightbulb, Bath, Users, ArrowLeft, Calendar, Infinity, UserSearch, X } from 'lucide-react';
 
 const ROOM_TYPE_MAP = {
   standard: 'Classique',
@@ -38,27 +38,18 @@ function FacilityIcon({ has, Icon, label }) {
   );
 }
 
-export default function ReservationForm({ reservation, rooms = [], allReservations = [], onSubmit, onCancel }) {
+export default function ReservationForm({ reservation, rooms = [], allReservations = [], existingOccupants = [], onSubmit, onCancel }) {
   const isEdit = !!reservation;
 
-  // Step 1: criteria
-  const [criteria, setCriteria] = useState({
-    genre: '',
-    num_people: 1,
-  });
-
-  // Dates & reservation type (step 3)
+  const [criteria, setCriteria] = useState({ genre: '', num_people: 1 });
   const [dates, setDates] = useState({
     check_in_date: reservation?.check_in_date || '',
     check_out_date: reservation?.check_out_date || '',
     reservation_type: reservation?.check_out_date ? 'determined' : 'determined',
   });
-
-  // Step 2: room selection
   const [step, setStep] = useState(isEdit ? 2 : 1);
   const [selectedRoom, setSelectedRoom] = useState(isEdit ? rooms.find(r => r.id === reservation.room_id) || null : null);
 
-  // Step 3: final form
   const [form, setForm] = useState({
     occupant_name: reservation?.occupant_name || '',
     occupant_phone: reservation?.occupant_phone || '',
@@ -67,9 +58,12 @@ export default function ReservationForm({ reservation, rooms = [], allReservatio
     is_married_couple: reservation?.is_married_couple || false,
     notes: reservation?.notes || '',
   });
+
+  const [occupantSearch, setOccupantSearch] = useState('');
+  const [showOccupantDropdown, setShowOccupantDropdown] = useState(false);
   const [error, setError] = useState('');
 
-  // Filter matching rooms by type and capacity only (no date filtering)
+  // Rooms with capacity >= num_people
   const matchingRooms = useMemo(() => {
     return rooms.filter(room => {
       if (room.status === 'unavailable') return false;
@@ -79,6 +73,30 @@ export default function ReservationForm({ reservation, rooms = [], allReservatio
       return true;
     });
   }, [criteria, rooms]);
+
+  // Filtered existing occupants for search
+  const filteredOccupants = useMemo(() => {
+    if (!occupantSearch.trim()) return existingOccupants.slice(0, 8);
+    const q = occupantSearch.toLowerCase();
+    return existingOccupants.filter(o =>
+      o.full_name?.toLowerCase().includes(q) || o.phone?.toLowerCase().includes(q)
+    ).slice(0, 8);
+  }, [occupantSearch, existingOccupants]);
+
+  const selectOccupant = (occ) => {
+    setForm(f => ({
+      ...f,
+      occupant_name: occ.full_name || '',
+      occupant_phone: occ.phone || '',
+    }));
+    setOccupantSearch(occ.full_name || '');
+    setShowOccupantDropdown(false);
+  };
+
+  const clearSelectedOccupant = () => {
+    setForm(f => ({ ...f, occupant_name: '', occupant_phone: '' }));
+    setOccupantSearch('');
+  };
 
   const validate = () => {
     if (!selectedRoom) return 'Veuillez sélectionner une chambre.';
@@ -97,6 +115,12 @@ export default function ReservationForm({ reservation, rooms = [], allReservatio
     const err = validate();
     if (err) { setError(err); return; }
     setError('');
+
+    // Check if occupant already exists (by name, case-insensitive)
+    const existingOcc = existingOccupants.find(
+      o => o.full_name?.toLowerCase() === form.occupant_name?.toLowerCase()
+    );
+
     onSubmit({
       ...form,
       room_id: selectedRoom.id,
@@ -105,12 +129,9 @@ export default function ReservationForm({ reservation, rooms = [], allReservatio
       site_name: selectedRoom.site_name || '',
       check_in_date: dates.check_in_date,
       check_out_date: dates.reservation_type === 'determined' ? dates.check_out_date : null,
+      _existingOccupant: existingOcc || null,
+      _selectedRoom: selectedRoom,
     });
-  };
-
-  const handleSearch = () => {
-    setError('');
-    setStep(2);
   };
 
   return (
@@ -148,12 +169,12 @@ export default function ReservationForm({ reservation, rooms = [], allReservatio
                   className="w-9 h-9 rounded-xl bg-slate-800 border border-slate-700 text-white hover:bg-slate-700 font-bold flex items-center justify-center">+</button>
                 <span className="text-sm text-slate-400 ml-1">personne(s)</span>
               </div>
-              <p className="text-xs text-slate-500">Capacité requise de la chambre</p>
+              <p className="text-xs text-slate-500">Chambres avec capacité ≥ {criteria.num_people} personne(s)</p>
             </div>
           </div>
           <div className="flex justify-end gap-3 pt-2">
             <GlassButton variant="secondary" type="button" onClick={onCancel}>Annuler</GlassButton>
-            <GlassButton type="button" onClick={handleSearch}><Search className="w-4 h-4" /> Rechercher des chambres</GlassButton>
+            <GlassButton type="button" onClick={() => { setError(''); setStep(2); }}><Search className="w-4 h-4" /> Rechercher des chambres</GlassButton>
           </div>
         </div>
       )}
@@ -165,7 +186,7 @@ export default function ReservationForm({ reservation, rooms = [], allReservatio
             <div className="text-sm text-slate-400">
               <span className="text-cyan-400 font-semibold">{matchingRooms.length}</span> chambre(s) disponible(s)
               {criteria.genre && <span className="ml-2 text-slate-500">· {ROOM_TYPE_MAP[criteria.genre] || criteria.genre}</span>}
-              <span className="ml-2 text-slate-500">· {criteria.num_people} pers.</span>
+              <span className="ml-2 text-slate-500">· ≥ {criteria.num_people} pers.</span>
             </div>
             <button type="button" onClick={() => { setStep(1); setSelectedRoom(null); }} className="flex items-center gap-1 text-xs text-slate-400 hover:text-white transition-colors">
               <ArrowLeft className="w-3.5 h-3.5" /> Modifier
@@ -235,6 +256,7 @@ export default function ReservationForm({ reservation, rooms = [], allReservatio
               )}
             </div>
           )}
+
           {/* Dates section */}
           <div className="space-y-3 p-4 rounded-xl bg-slate-800/40 border border-slate-700/40">
             <div className="text-xs font-semibold text-slate-400 uppercase tracking-wider">Dates de séjour</div>
@@ -264,31 +286,88 @@ export default function ReservationForm({ reservation, rooms = [], allReservatio
                 onChange={e => setDates({ ...dates, check_out_date: e.target.value })} />
             )}
           </div>
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-            <GlassInput label="Nom de l'occupant *" hint="Prénom et nom complet" value={form.occupant_name}
-              onChange={e => setForm({ ...form, occupant_name: e.target.value })} required placeholder="ex: Kouamé Jean" />
-            <GlassInput label="Téléphone" hint="Numéro de téléphone de l'occupant" value={form.occupant_phone}
-              onChange={e => setForm({ ...form, occupant_phone: e.target.value })} placeholder="ex: +225 07 00 00 00" />
+
+          {/* Occupant Details Section */}
+          <div className="space-y-3 p-4 rounded-xl bg-slate-800/40 border border-slate-700/40">
+            <div className="flex items-center justify-between">
+              <div className="text-xs font-semibold text-slate-400 uppercase tracking-wider">Détails de l'occupant</div>
+              {!isEdit && existingOccupants.length > 0 && (
+                <span className="text-xs text-slate-500">{existingOccupants.length} occupant(s) existant(s)</span>
+              )}
+            </div>
+
+            {/* Search existing occupants */}
+            {!isEdit && (
+              <div className="relative">
+                <label className="text-xs font-semibold text-slate-300 uppercase tracking-wide block mb-1">Sélectionner un occupant existant</label>
+                <p className="text-xs text-slate-500 mb-1.5">Recherchez ou saisissez un nouveau nom ci-dessous</p>
+                <div className="relative">
+                  <UserSearch className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-500" />
+                  <input
+                    className="w-full pl-10 pr-9 py-2.5 rounded-md bg-black border border-slate-600 text-white text-sm placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-cyan-500/50 focus:border-cyan-500/60 transition-colors"
+                    placeholder="Rechercher par nom ou téléphone..."
+                    value={occupantSearch}
+                    onChange={e => { setOccupantSearch(e.target.value); setShowOccupantDropdown(true); }}
+                    onFocus={() => setShowOccupantDropdown(true)}
+                  />
+                  {occupantSearch && (
+                    <button type="button" onClick={clearSelectedOccupant} className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-500 hover:text-white">
+                      <X className="w-3.5 h-3.5" />
+                    </button>
+                  )}
+                </div>
+                {showOccupantDropdown && filteredOccupants.length > 0 && (
+                  <div className="absolute z-50 w-full mt-1 bg-[#0d1324] border border-slate-700 rounded-xl shadow-2xl overflow-hidden">
+                    {filteredOccupants.map(occ => (
+                      <button
+                        key={occ.id}
+                        type="button"
+                        onMouseDown={() => selectOccupant(occ)}
+                        className="w-full text-left px-4 py-2.5 hover:bg-slate-800/60 transition-colors flex items-center justify-between"
+                      >
+                        <div>
+                          <p className="text-sm text-white font-medium">{occ.full_name}</p>
+                          <p className="text-xs text-slate-500">{occ.phone || 'Pas de téléphone'} · {occ.room_number ? `Chambre ${occ.room_number}` : 'Sans chambre'}</p>
+                        </div>
+                        <span className="text-xs px-2 py-0.5 rounded-full bg-slate-700 text-slate-300 capitalize">{occ.gender}</span>
+                      </button>
+                    ))}
+                  </div>
+                )}
+              </div>
+            )}
+
+            {/* Name & Phone */}
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              <GlassInput label="Nom de l'occupant *" hint="Prénom et nom complet" value={form.occupant_name}
+                onChange={e => { setForm({ ...form, occupant_name: e.target.value }); setShowOccupantDropdown(false); }} required placeholder="ex: Kouamé Jean" />
+              <GlassInput label="Téléphone" hint="Numéro de téléphone de l'occupant" value={form.occupant_phone}
+                onChange={e => setForm({ ...form, occupant_phone: e.target.value })} placeholder="ex: +225 07 00 00 00" />
+            </div>
+
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              <GlassSelect label="Type d'occupant *" hint="Catégorie de l'occupant" value={form.occupant_type}
+                onChange={e => setForm({ ...form, occupant_type: e.target.value })}
+                options={OCCUPANT_TYPES} />
+              <GlassSelect label="Statut" hint="État de la réservation" value={form.status}
+                onChange={e => setForm({ ...form, status: e.target.value })} options={[
+                  { value: 'pending', label: 'En attente' },
+                  { value: 'confirmed', label: 'Confirmée' },
+                  { value: 'canceled', label: 'Annulée' },
+                ]} />
+            </div>
+
+            <label className="flex items-center gap-2 text-sm text-slate-300 cursor-pointer">
+              <input type="checkbox" checked={form.is_married_couple}
+                onChange={e => setForm({ ...form, is_married_couple: e.target.checked })}
+                className="w-4 h-4 rounded bg-slate-800 border-slate-600 text-cyan-500" />
+              💍 Couple marié
+            </label>
           </div>
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-            <GlassSelect label="Type d'occupant *" hint="Catégorie de l'occupant" value={form.occupant_type}
-              onChange={e => setForm({ ...form, occupant_type: e.target.value })}
-              options={OCCUPANT_TYPES} />
-            <GlassSelect label="Statut" hint="État de la réservation" value={form.status}
-              onChange={e => setForm({ ...form, status: e.target.value })} options={[
-                { value: 'pending', label: 'En attente' },
-                { value: 'confirmed', label: 'Confirmée' },
-                { value: 'canceled', label: 'Annulée' },
-              ]} />
-          </div>
-          <label className="flex items-center gap-2 text-sm text-slate-300 cursor-pointer">
-            <input type="checkbox" checked={form.is_married_couple}
-              onChange={e => setForm({ ...form, is_married_couple: e.target.checked })}
-              className="w-4 h-4 rounded bg-slate-800 border-slate-600 text-cyan-500" />
-            💍 Couple marié
-          </label>
+
           <GlassTextarea label="Notes" hint="Informations supplémentaires (optionnel)" value={form.notes}
             onChange={e => setForm({ ...form, notes: e.target.value })} placeholder="Observations ou instructions particulières..." />
+
           <div className="flex justify-end gap-3 pt-2">
             <GlassButton variant="secondary" type="button" onClick={onCancel}>Annuler</GlassButton>
             <GlassButton type="submit">{isEdit ? 'Mettre à jour' : 'Confirmer la réservation'}</GlassButton>
