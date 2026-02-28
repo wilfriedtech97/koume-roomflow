@@ -29,11 +29,33 @@ export default function Reservations() {
 
   const saveMut = useMutation({
     mutationFn: async (data) => {
-      if (modal.reservation) return base44.entities.Reservation.update(modal.reservation.id, data);
-      const res = await base44.entities.Reservation.create(data);
+      // Extract internal fields before saving reservation
+      const { _existingOccupant, _selectedRoom, ...resData } = data;
+
+      if (modal.reservation) return base44.entities.Reservation.update(modal.reservation.id, resData);
+
+      const res = await base44.entities.Reservation.create(resData);
+
+      // Auto-create occupant if not already existing
+      if (!_existingOccupant && resData.occupant_name?.trim()) {
+        await base44.entities.Occupant.create({
+          full_name: resData.occupant_name,
+          phone: resData.occupant_phone || '',
+          gender: resData.occupant_type === 'woman' ? 'female' : 'male',
+          room_id: resData.room_id,
+          room_number: resData.room_number,
+          building_name: resData.building_name,
+          site_name: resData.site_name,
+          check_in_date: resData.check_in_date,
+          check_out_date: resData.check_out_date || '',
+          status: 'active',
+        });
+        qc.invalidateQueries({ queryKey: ['occupants'] });
+      }
+
       await base44.entities.HistoryEvent.create({
-        event_type: 'reservation', entity_type: 'reservation', entity_name: data.occupant_name,
-        description: `Reservation for ${data.occupant_name} in Room ${data.room_number}`,
+        event_type: 'reservation', entity_type: 'reservation', entity_name: resData.occupant_name,
+        description: `Reservation for ${resData.occupant_name} in Room ${resData.room_number}`,
         timestamp: new Date().toISOString(),
       });
       return res;
