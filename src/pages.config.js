@@ -54,7 +54,6 @@ import History from './pages/History';
 import Occupants from './pages/Occupants';
 import Reservations from './pages/Reservations';
 import Rooms from './pages/Rooms';
-import SearchPage from './pages/SearchPage';
 import Sites from './pages/Sites';
 import __Layout from './Layout.jsx';
 
@@ -67,7 +66,6 @@ export const PAGES = {
     "Occupants": Occupants,
     "Reservations": Reservations,
     "Rooms": Rooms,
-    "SearchPage": SearchPage,
     "Sites": Sites,
 }
 

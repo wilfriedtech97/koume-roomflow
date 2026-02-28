@@ -24,7 +24,7 @@ const navSections = [
     items: [
       { name: 'Reservations', icon: CalendarCheck, page: 'Reservations' },
       { name: 'History', icon: Clock, page: 'History' },
-      { name: 'Search', icon: Search, page: 'SearchPage' },
+
       { name: 'Admin', icon: Shield, page: 'Admin' },
     ],
   },
