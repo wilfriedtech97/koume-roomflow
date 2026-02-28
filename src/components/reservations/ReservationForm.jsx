@@ -134,30 +134,6 @@ export default function ReservationForm({ reservation, rooms = [], allReservatio
       {step === 1 && (
         <div className="space-y-4">
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-            <GlassInput label="Date d'arrivée *" type="date" value={criteria.check_in_date}
-              onChange={e => setCriteria({ ...criteria, check_in_date: e.target.value })} />
-            <div className="space-y-1.5">
-              <label className="text-sm font-medium text-slate-300">Type de réservation</label>
-              <div className="flex gap-2">
-                <button type="button"
-                  onClick={() => setCriteria({ ...criteria, reservation_type: 'determined' })}
-                  className={`flex-1 py-2.5 rounded-xl text-sm font-medium transition-all flex items-center justify-center gap-2 border ${criteria.reservation_type === 'determined' ? 'bg-cyan-500/20 border-cyan-500/50 text-cyan-300' : 'bg-slate-800/60 border-slate-700/50 text-slate-400 hover:bg-slate-700/50'}`}>
-                  <Calendar className="w-4 h-4" /> Déterminée
-                </button>
-                <button type="button"
-                  onClick={() => setCriteria({ ...criteria, reservation_type: 'undetermined', check_out_date: '' })}
-                  className={`flex-1 py-2.5 rounded-xl text-sm font-medium transition-all flex items-center justify-center gap-2 border ${criteria.reservation_type === 'undetermined' ? 'bg-purple-500/20 border-purple-500/50 text-purple-300' : 'bg-slate-800/60 border-slate-700/50 text-slate-400 hover:bg-slate-700/50'}`}>
-                  <Infinity className="w-4 h-4" /> Indéterminée
-                </button>
-              </div>
-            </div>
-          </div>
-          {criteria.reservation_type === 'determined' && (
-            <GlassInput label="Date de départ *" type="date" value={criteria.check_out_date}
-              min={criteria.check_in_date}
-              onChange={e => setCriteria({ ...criteria, check_out_date: e.target.value })} />
-          )}
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <GlassSelect label="Type de chambre" value={criteria.genre}
               onChange={e => setCriteria({ ...criteria, genre: e.target.value })}
               options={ROOM_GENRES} />
