@@ -56,15 +56,17 @@ export default function RoomForm({ room, sites = [], buildings = [], onSubmit, o
           <label className={labelClass}>Site *</label>
           <select className={inputClass} value={form.site_id} onChange={e => setForm({ ...form, site_id: e.target.value, building_id: '' })}>
             <option value="">Sélectionner un site</option>
-            {sites.map(s => <option key={s.id} value={s.id}>{s.name}</option>)}
+            {sites.map(s => <option key={s.id} value={s.id} className="bg-black text-white">{s.name}</option>)}
           </select>
+          <p className="text-xs text-slate-500 mt-0.5">Site où se trouve la chambre</p>
         </div>
         <div>
           <label className={labelClass}>Bâtiment *</label>
           <select className={inputClass} value={form.building_id} onChange={e => setForm({ ...form, building_id: e.target.value })}>
             <option value="">Sélectionner un bâtiment</option>
-            {filteredBuildings.map(b => <option key={b.id} value={b.id}>{b.name}</option>)}
+            {filteredBuildings.map(b => <option key={b.id} value={b.id} className="bg-black text-white">{b.name}</option>)}
           </select>
+          <p className="text-xs text-slate-500 mt-0.5">Bâtiment du site sélectionné</p>
         </div>
       </div>
 
