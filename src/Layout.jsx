@@ -162,7 +162,7 @@ export default function Layout({ children, currentPageName }) {
 
       {/* Main Content */}
       <main className="flex-1 min-h-screen">
-        <div className="lg:hidden sticky top-0 z-30 bg-[#050810]/90 backdrop-blur-lg border-b border-slate-800/50 px-4 py-3 flex items-center gap-3">
+        <div className="lg:hidden sticky top-0 z-30 backdrop-blur-lg border-b px-4 py-3 flex items-center gap-3" style={{background:'var(--topbar-bg)', borderColor:'var(--sidebar-border)'}}>
           <button onClick={() => setSidebarOpen(true)} className="p-1.5 hover:bg-slate-800/50 rounded-lg">
             <Menu className="w-5 h-5 text-slate-300" />
           </button>
