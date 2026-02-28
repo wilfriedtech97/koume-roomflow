@@ -4,7 +4,7 @@ import { createPageUrl } from '@/utils';
 import { base44 } from '@/api/base44Client';
 import {
   LayoutDashboard, MapPin, Building2, DoorOpen, Users, CalendarCheck,
-  Clock, Search, Shield, Menu, ChevronRight, LogOut
+  Clock, Shield, Menu, ChevronRight, LogOut
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 
