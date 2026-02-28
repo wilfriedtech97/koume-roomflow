@@ -2,9 +2,10 @@ import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { createPageUrl } from '@/utils';
 import { base44 } from '@/api/base44Client';
+import { useTheme } from './components/ui-custom/useTheme';
 import {
   LayoutDashboard, MapPin, Building2, DoorOpen, Users, CalendarCheck,
-  Clock, Search, Shield, Menu, X, ChevronRight, LogOut
+  Clock, Search, Shield, Menu, X, ChevronRight, LogOut, Sun, Moon
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 
