@@ -68,28 +68,16 @@ export default function ReservationForm({ reservation, rooms = [], allReservatio
   });
   const [error, setError] = useState('');
 
-  // Filter matching rooms
+  // Filter matching rooms by type and capacity only (no date filtering)
   const matchingRooms = useMemo(() => {
-    if (!criteria.check_in_date) return [];
-    const checkOut = criteria.reservation_type === 'undetermined' ? '9999-12-31' : criteria.check_out_date;
-    if (criteria.reservation_type === 'determined' && !criteria.check_out_date) return [];
-
     return rooms.filter(room => {
       if (room.status === 'unavailable') return false;
       if (criteria.genre && room.genre !== criteria.genre) return false;
       const cap = room.capacity || room.bed_count || 1;
       if (cap < Number(criteria.num_people)) return false;
-
-      // Check date overlap with existing reservations
-      const conflicting = allReservations.filter(r => {
-        if (r.room_id !== room.id || r.status === 'canceled') return false;
-        if (reservation && r.id === reservation.id) return false;
-        const rOut = r.check_out_date || '9999-12-31';
-        return criteria.check_in_date < rOut && checkOut > r.check_in_date;
-      });
-      return conflicting.length === 0;
+      return true;
     });
-  }, [criteria, rooms, allReservations, reservation]);
+  }, [criteria, rooms]);
 
   const validate = () => {
     if (!selectedRoom) return 'Veuillez sélectionner une chambre.';
