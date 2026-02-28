@@ -264,8 +264,12 @@ export default function ReservationForm({ reservation, rooms = [], allReservatio
                 onChange={e => setDates({ ...dates, check_out_date: e.target.value })} />
             )}
           </div>
-          <GlassInput label="Nom de l'occupant *" hint="Prénom et nom complet" value={form.occupant_name}
-            onChange={e => setForm({ ...form, occupant_name: e.target.value })} required placeholder="ex: Kouamé Jean" />
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <GlassInput label="Nom de l'occupant *" hint="Prénom et nom complet" value={form.occupant_name}
+              onChange={e => setForm({ ...form, occupant_name: e.target.value })} required placeholder="ex: Kouamé Jean" />
+            <GlassInput label="Téléphone" hint="Numéro de téléphone de l'occupant" value={form.occupant_phone}
+              onChange={e => setForm({ ...form, occupant_phone: e.target.value })} placeholder="ex: +225 07 00 00 00" />
+          </div>
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <GlassSelect label="Type d'occupant *" hint="Catégorie de l'occupant" value={form.occupant_type}
               onChange={e => setForm({ ...form, occupant_type: e.target.value })}
