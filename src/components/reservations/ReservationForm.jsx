@@ -61,6 +61,7 @@ export default function ReservationForm({ reservation, rooms = [], allReservatio
   // Step 3: final form
   const [form, setForm] = useState({
     occupant_name: reservation?.occupant_name || '',
+    occupant_phone: reservation?.occupant_phone || '',
     occupant_type: reservation?.occupant_type || 'man',
     status: reservation?.status || 'pending',
     is_married_couple: reservation?.is_married_couple || false,
