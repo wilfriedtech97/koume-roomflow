@@ -119,7 +119,7 @@ export default function Reservations() {
           { value: '', label: 'All Status' }, { value: 'pending', label: 'Pending' }, { value: 'confirmed', label: 'Confirmed' }, { value: 'canceled', label: 'Canceled' },
         ]} />
         <GlassSelect value={typeFilter} onChange={e => setTypeFilter(e.target.value)} options={[
-          { value: '', label: 'All Types' }, { value: 'standard', label: 'Classique' }, { value: 'vip', label: 'VIP' }, { value: 'couple', label: 'Couple' }, { value: 'prayer', label: 'Prayer' },
+          { value: '', label: 'All Types' }, { value: 'man', label: 'Man' }, { value: 'woman', label: 'Woman' }, { value: 'couple', label: 'Couple' }, { value: 'family', label: 'Family' },
         ]} />
         {/* Date From */}
         <div className="relative" ref={calFromRef}>
