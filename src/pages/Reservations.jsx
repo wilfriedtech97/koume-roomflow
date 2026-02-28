@@ -22,7 +22,20 @@ export default function Reservations() {
   const [typeFilter, setTypeFilter] = useState('');
   const [dateFrom, setDateFrom] = useState('');
   const [dateTo, setDateTo] = useState('');
+  const [showCalFrom, setShowCalFrom] = useState(false);
+  const [showCalTo, setShowCalTo] = useState(false);
+  const calFromRef = useRef(null);
+  const calToRef = useRef(null);
   const qc = useQueryClient();
+
+  useEffect(() => {
+    const handler = (e) => {
+      if (calFromRef.current && !calFromRef.current.contains(e.target)) setShowCalFrom(false);
+      if (calToRef.current && !calToRef.current.contains(e.target)) setShowCalTo(false);
+    };
+    document.addEventListener('mousedown', handler);
+    return () => document.removeEventListener('mousedown', handler);
+  }, []);
 
   const { data: reservations = [], isLoading } = useQuery({ queryKey: ['reservations'], queryFn: () => base44.entities.Reservation.list('-created_date') });
   const { data: rooms = [] } = useQuery({ queryKey: ['rooms'], queryFn: () => base44.entities.Room.list() });
