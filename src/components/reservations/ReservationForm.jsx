@@ -102,8 +102,8 @@ export default function ReservationForm({ reservation, rooms = [], allReservatio
       room_number: selectedRoom.number,
       building_name: selectedRoom.building_name || '',
       site_name: selectedRoom.site_name || '',
-      check_in_date: criteria.check_in_date,
-      check_out_date: criteria.reservation_type === 'determined' ? criteria.check_out_date : null,
+      check_in_date: dates.check_in_date,
+      check_out_date: dates.reservation_type === 'determined' ? dates.check_out_date : null,
     });
   };
 
