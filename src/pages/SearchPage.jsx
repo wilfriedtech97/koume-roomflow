@@ -61,13 +61,21 @@ export default function SearchPage() {
     <div>
       <PageHeader title="Search" subtitle="Search across all data" />
 
-      <div className="flex gap-3 mb-6">
-        <div className="relative flex-1">
-          <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-500" />
-          <input className="w-full pl-10 pr-4 py-3 glass-input text-sm" placeholder="Search occupants, rooms, buildings, reservations, sites..." value={query} onChange={e => setQuery(e.target.value)} autoFocus />
-        </div>
-        <div className="w-44">
-          <GlassSelect value={category} onChange={e => setCategory(e.target.value)} options={[
+      <div className="space-y-1 mb-6">
+        <label className="text-xs font-semibold text-slate-300 uppercase tracking-wide">Recherche</label>
+        <div className="flex gap-3">
+          <div className="relative flex-1">
+            <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-500" />
+            <input
+              className="w-full pl-10 pr-4 py-2.5 rounded-md bg-black border border-slate-600 text-white text-sm placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-cyan-500/50 focus:border-cyan-500/60 transition-colors"
+              placeholder="Nom, numéro, mot-clé..."
+              value={query}
+              onChange={e => setQuery(e.target.value)}
+              autoFocus
+            />
+          </div>
+          <div className="w-44">
+            <GlassSelect value={category} onChange={e => setCategory(e.target.value)} options={[
             { value: 'all', label: 'All Categories' },
             { value: 'occupants', label: 'Occupants' },
             { value: 'rooms', label: 'Rooms' },
