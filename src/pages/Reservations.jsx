@@ -105,13 +105,24 @@ export default function Reservations() {
         <GlassSelect value={typeFilter} onChange={e => setTypeFilter(e.target.value)} options={[
           { value: '', label: 'All Types' }, { value: 'man', label: 'Man' }, { value: 'woman', label: 'Woman' }, { value: 'couple', label: 'Couple' }, { value: 'family', label: 'Family' },
         ]} />
-        <GlassInput type="date" value={dateFrom} onChange={e => setDateFrom(e.target.value)} placeholder="From" />
-        <div className="flex gap-2">
-          <GlassInput type="date" value={dateTo} onChange={e => setDateTo(e.target.value)} placeholder="To" className="flex-1" />
-          {(dateFrom || dateTo) && (
-            <button onClick={clearDateFilters} className="p-2.5 glass-input rounded-xl hover:bg-slate-700/50 flex items-center"><X className="w-4 h-4 text-slate-400" /></button>
-          )}
-        </div>
+        {/* Date From */}
+        <label className="relative cursor-pointer group">
+          <div className="flex items-center gap-2 px-3 py-2.5 rounded-md bg-black border border-slate-600 hover:border-cyan-500/60 transition-colors">
+            <Calendar className="w-4 h-4 text-cyan-400 shrink-0" />
+            <span className={`text-sm ${dateFrom ? 'text-white' : 'text-slate-500'}`}>{dateFrom ? moment(dateFrom).format('DD MMM YYYY') : 'De (From)'}</span>
+            {dateFrom && <button type="button" onClick={e => { e.preventDefault(); setDateFrom(''); }} className="ml-auto text-slate-500 hover:text-white"><X className="w-3 h-3" /></button>}
+          </div>
+          <input type="date" value={dateFrom} onChange={e => setDateFrom(e.target.value)} className="absolute inset-0 opacity-0 cursor-pointer w-full" />
+        </label>
+        {/* Date To */}
+        <label className="relative cursor-pointer group">
+          <div className="flex items-center gap-2 px-3 py-2.5 rounded-md bg-black border border-slate-600 hover:border-cyan-500/60 transition-colors">
+            <Calendar className="w-4 h-4 text-rose-400 shrink-0" />
+            <span className={`text-sm ${dateTo ? 'text-white' : 'text-slate-500'}`}>{dateTo ? moment(dateTo).format('DD MMM YYYY') : 'À (To)'}</span>
+            {dateTo && <button type="button" onClick={e => { e.preventDefault(); setDateTo(''); }} className="ml-auto text-slate-500 hover:text-white"><X className="w-3 h-3" /></button>}
+          </div>
+          <input type="date" value={dateTo} onChange={e => setDateTo(e.target.value)} className="absolute inset-0 opacity-0 cursor-pointer w-full" />
+        </label>
       </div>
 
       {filtered.length === 0 ? (
