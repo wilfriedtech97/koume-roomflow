@@ -2,10 +2,9 @@ import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { createPageUrl } from '@/utils';
 import { base44 } from '@/api/base44Client';
-import { useTheme } from './components/ui-custom/useTheme';
 import {
   LayoutDashboard, MapPin, Building2, DoorOpen, Users, CalendarCheck,
-  Clock, Search, Shield, Menu, X, ChevronRight, LogOut, Sun, Moon
+  Clock, Search, Shield, Menu, ChevronRight, LogOut
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 
@@ -36,7 +35,6 @@ const visitorPages = ['Dashboard', 'Reservations', 'History', 'SearchPage'];
 export default function Layout({ children, currentPageName }) {
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [user, setUser] = useState(null);
-  const { theme, toggle, isDark } = useTheme();
 
   useEffect(() => {
     base44.auth.me().then(setUser).catch(() => {});
@@ -52,7 +50,7 @@ export default function Layout({ children, currentPageName }) {
 
   if (isRestricted && !canAccess(currentPageName)) {
     return (
-      <div className="min-h-screen flex items-center justify-center p-4" style={{background:'var(--bg-primary)'}}>
+      <div className="min-h-screen flex items-center justify-center p-4 bg-[#050810]">
         <div className="glass-card p-8 text-center max-w-md">
           <Shield className="w-12 h-12 text-cyan-400 mx-auto mb-4" />
           <h2 className="text-xl font-bold text-white mb-2">Access Restricted</h2>
@@ -66,7 +64,7 @@ export default function Layout({ children, currentPageName }) {
   }
 
   return (
-    <div className="min-h-screen flex" style={{background:'var(--bg-primary)'}}>
+    <div className="min-h-screen flex bg-[#050810]">
       {/* Mobile overlay */}
       <AnimatePresence>
         {sidebarOpen && (
@@ -81,8 +79,8 @@ export default function Layout({ children, currentPageName }) {
       </AnimatePresence>
 
       {/* Sidebar */}
-      <aside className={`fixed lg:sticky top-0 left-0 h-screen w-64 backdrop-blur-xl z-50 flex flex-col transition-transform duration-300 border-r ${sidebarOpen ? 'translate-x-0' : '-translate-x-full lg:translate-x-0'}`} style={{background:'var(--sidebar-bg)', borderColor:'var(--sidebar-border)'}}>
-        <div className="p-5 border-b" style={{borderColor:'var(--sidebar-border)'}}>
+      <aside className={`fixed lg:sticky top-0 left-0 h-screen w-64 bg-[#080d1c]/95 border-r border-slate-800/50 backdrop-blur-xl z-50 flex flex-col transition-transform duration-300 ${sidebarOpen ? 'translate-x-0' : '-translate-x-full lg:translate-x-0'}`}>
+        <div className="p-5 border-b border-slate-800/50">
           <div className="flex items-center gap-3">
             <div className="w-9 h-9 rounded-xl bg-gradient-to-br from-cyan-500 to-blue-600 flex items-center justify-center">
               <Building2 className="w-5 h-5 text-white" />
@@ -108,14 +106,11 @@ export default function Layout({ children, currentPageName }) {
                       key={item.page}
                       to={createPageUrl(item.page)}
                       onClick={() => setSidebarOpen(false)}
-                      style={isActive ? {
-                background: 'var(--sidebar-active-bg)',
-                borderColor: 'var(--sidebar-active-border)',
-                color: 'var(--sidebar-active-text)',
-              } : {color:'var(--sidebar-text)'}}
-              className={`flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium transition-all border ${
-                isActive ? 'border' : 'border-transparent hover:bg-[var(--sidebar-hover)]'
-              }`}
+                      className={`flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium transition-all ${
+                        isActive
+                          ? 'bg-gradient-to-r from-cyan-500/15 to-blue-500/10 text-cyan-400 border border-cyan-500/20'
+                          : 'text-white hover:bg-slate-800/50 hover:text-cyan-300'
+                      }`}
                     >
                       <item.icon className="w-4.5 h-4.5" />
                       {item.name}
@@ -128,32 +123,19 @@ export default function Layout({ children, currentPageName }) {
           ))}
         </nav>
 
-        <div className="p-4 border-t" style={{borderColor:'var(--sidebar-border)'}}>
+        <div className="p-4 border-t border-slate-800/50">
           <div className="flex items-center gap-3 mb-3">
             <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-violet-500 to-purple-600 flex items-center justify-center text-xs font-bold text-white">
               {(user?.full_name || 'U')[0].toUpperCase()}
             </div>
             <div className="flex-1 min-w-0">
-              <p className="text-sm font-medium truncate" style={{color:'var(--text-primary)'}}>{user?.full_name || 'User'}</p>
-              <p className="text-[10px] capitalize" style={{color:'var(--text-muted)'}}>{role}</p>
+              <p className="text-sm font-medium text-white truncate">{user?.full_name || 'User'}</p>
+              <p className="text-[10px] text-slate-500 capitalize">{role}</p>
             </div>
-            {/* Theme toggle */}
-            <button
-              onClick={toggle}
-              title={isDark ? 'Switch to Light' : 'Switch to Dark'}
-              className="w-8 h-8 rounded-lg flex items-center justify-center transition-all hover:scale-110 shrink-0"
-              style={{background: isDark ? 'rgba(251,191,36,0.12)' : 'rgba(8,145,178,0.1)', border:'1px solid', borderColor: isDark ? 'rgba(251,191,36,0.3)' : 'rgba(8,145,178,0.25)'}}
-            >
-              {isDark
-                ? <Sun className="w-4 h-4 text-amber-400" />
-                : <Moon className="w-4 h-4 text-cyan-600" />
-              }
-            </button>
           </div>
           <button
             onClick={() => base44.auth.logout()}
-            className="w-full flex items-center gap-2 px-3 py-2 text-xs rounded-lg transition-colors hover:bg-rose-500/10 hover:text-rose-500"
-            style={{color:'var(--text-muted)'}}
+            className="w-full flex items-center gap-2 px-3 py-2 text-xs text-slate-400 hover:text-rose-400 hover:bg-rose-500/10 rounded-lg transition-colors"
           >
             <LogOut className="w-3.5 h-3.5" /> Sign Out
           </button>
@@ -162,7 +144,7 @@ export default function Layout({ children, currentPageName }) {
 
       {/* Main Content */}
       <main className="flex-1 min-h-screen">
-        <div className="lg:hidden sticky top-0 z-30 backdrop-blur-lg border-b px-4 py-3 flex items-center gap-3" style={{background:'var(--topbar-bg)', borderColor:'var(--sidebar-border)'}}>
+        <div className="lg:hidden sticky top-0 z-30 bg-[#050810]/90 backdrop-blur-lg border-b border-slate-800/50 px-4 py-3 flex items-center gap-3">
           <button onClick={() => setSidebarOpen(true)} className="p-1.5 hover:bg-slate-800/50 rounded-lg">
             <Menu className="w-5 h-5 text-slate-300" />
           </button>
