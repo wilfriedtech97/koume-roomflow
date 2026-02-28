@@ -9,6 +9,15 @@ import EmptyState from '../components/ui-custom/EmptyState';
 import LoadingSpinner from '../components/ui-custom/LoadingSpinner';
 import moment from 'moment';
 
+function Detail({ label, value }) {
+  return (
+    <div>
+      <span className="text-slate-500">{label}: </span>
+      <span className="text-slate-300 capitalize">{value || '—'}</span>
+    </div>
+  );
+}
+
 export default function SearchPage() {
   const [query, setQuery] = useState('');
   const [category, setCategory] = useState('all');
