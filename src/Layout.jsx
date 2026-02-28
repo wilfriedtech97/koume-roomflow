@@ -128,7 +128,7 @@ export default function Layout({ children, currentPageName }) {
           ))}
         </nav>
 
-        <div className="p-4 border-t border-slate-800/50">
+        <div className="p-4 border-t" style={{borderColor:'var(--sidebar-border)'}}>
           <div className="flex items-center gap-3 mb-3">
             <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-violet-500 to-purple-600 flex items-center justify-center text-xs font-bold text-white">
               {(user?.full_name || 'U')[0].toUpperCase()}
