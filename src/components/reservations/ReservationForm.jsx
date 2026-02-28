@@ -81,26 +81,13 @@ export default function ReservationForm({ reservation, rooms = [], allReservatio
 
   const validate = () => {
     if (!selectedRoom) return 'Veuillez sélectionner une chambre.';
-    const checkOut = criteria.reservation_type === 'undetermined' ? null : criteria.check_out_date;
+    if (!dates.check_in_date) return 'Veuillez saisir la date d\'arrivée.';
+    if (dates.reservation_type === 'determined' && !dates.check_out_date) return 'Veuillez saisir la date de départ.';
     const sameNameCount = allReservations.filter(r => {
       if (reservation && r.id === reservation.id) return false;
       return r.occupant_name?.toLowerCase() === form.occupant_name?.toLowerCase() && r.status !== 'canceled';
     }).length;
     if (sameNameCount >= 2) return 'Cette personne a déjà 2 réservations actives (max 2).';
-    if ((form.occupant_type === 'man' || form.occupant_type === 'woman') && !form.is_married_couple) {
-      const roomRes = allReservations.filter(r => {
-        if (reservation && r.id === reservation.id) return false;
-        if (r.room_id !== selectedRoom.id || r.status === 'canceled') return false;
-        const rOut = r.check_out_date || '9999-12-31';
-        const cOut = checkOut || '9999-12-31';
-        return criteria.check_in_date < rOut && cOut > r.check_in_date;
-      });
-      const hasOpposite = roomRes.some(r =>
-        (form.occupant_type === 'man' && r.occupant_type === 'woman') ||
-        (form.occupant_type === 'woman' && r.occupant_type === 'man')
-      );
-      if (hasOpposite) return 'Mixité de genre non autorisée sauf pour couples mariés.';
-    }
     return '';
   };
 
