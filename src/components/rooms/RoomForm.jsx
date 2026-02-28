@@ -100,9 +100,10 @@ export default function RoomForm({ room, sites = [], buildings = [], onSubmit, o
 
       <div>
         <label className={labelClass}>Équipements</label>
+        <p className="text-xs text-slate-500 mb-2">Cochez les équipements disponibles dans cette chambre</p>
         <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
           {facilities.map(f => (
-            <label key={f.key} className="flex items-center gap-2 text-sm font-medium text-black cursor-pointer">
+            <label key={f.key} className="flex items-center gap-2 text-sm font-medium text-slate-300 cursor-pointer">
               <input
                 type="checkbox"
                 checked={form[f.key]}
