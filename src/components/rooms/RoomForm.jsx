@@ -19,7 +19,7 @@ export default function RoomForm({ room, sites = [], buildings = [], onSubmit, o
     building_id: room?.building_id || '',
     genre: room?.genre || 'standard',
     status: room?.status || 'available',
-    bed_count: room?.bed_count || 1,
+    capacity: room?.capacity || 1,
     hot_water: room?.hot_water || false,
     internal_shower: room?.internal_shower || false,
     bathroom: room?.bathroom || false,
