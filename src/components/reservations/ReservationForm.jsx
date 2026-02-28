@@ -134,7 +134,7 @@ export default function ReservationForm({ reservation, rooms = [], allReservatio
       {step === 1 && (
         <div className="space-y-4">
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-            <GlassSelect label="Type de chambre" value={criteria.genre}
+            <GlassSelect label="Type de chambre" hint="Filtrer par catégorie de chambre" value={criteria.genre}
               onChange={e => setCriteria({ ...criteria, genre: e.target.value })}
               options={ROOM_GENRES} />
             <div className="space-y-1.5">
