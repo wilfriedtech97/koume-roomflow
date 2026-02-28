@@ -238,10 +238,11 @@ export default function ReservationForm({ reservation, rooms = [], allReservatio
           <div className="space-y-3 p-4 rounded-xl bg-slate-800/40 border border-slate-700/40">
             <div className="text-xs font-semibold text-slate-400 uppercase tracking-wider">Dates de séjour</div>
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-              <GlassInput label="Date d'arrivée *" type="date" value={dates.check_in_date}
+              <GlassInput label="Date d'arrivée *" hint="Jour d'entrée dans la chambre" type="date" value={dates.check_in_date}
                 onChange={e => setDates({ ...dates, check_in_date: e.target.value })} />
-              <div className="space-y-1.5">
-                <label className="text-sm font-medium text-slate-300">Type de réservation</label>
+              <div className="space-y-1">
+                <label className="text-xs font-semibold text-slate-300 uppercase tracking-wide">Type de réservation</label>
+                <p className="text-xs text-slate-500">Durée déterminée ou indéterminée</p>
                 <div className="flex gap-2">
                   <button type="button"
                     onClick={() => setDates({ ...dates, reservation_type: 'determined' })}
