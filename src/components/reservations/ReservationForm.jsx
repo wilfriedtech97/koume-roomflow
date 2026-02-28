@@ -233,9 +233,33 @@ export default function ReservationForm({ reservation, rooms = [], allReservatio
               )}
             </div>
           )}
-          <div className="grid grid-cols-2 gap-3 text-xs text-slate-400 px-1">
-            <div><span className="text-slate-500">Arrivée:</span> <span className="text-white">{criteria.check_in_date || reservation?.check_in_date || '—'}</span></div>
-            <div><span className="text-slate-500">Départ:</span> <span className="text-white">{criteria.reservation_type === 'undetermined' ? 'Indéterminée' : (criteria.check_out_date || reservation?.check_out_date || '—')}</span></div>
+          {/* Dates section */}
+          <div className="space-y-3 p-4 rounded-xl bg-slate-800/40 border border-slate-700/40">
+            <div className="text-xs font-semibold text-slate-400 uppercase tracking-wider">Dates de séjour</div>
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+              <GlassInput label="Date d'arrivée *" type="date" value={dates.check_in_date}
+                onChange={e => setDates({ ...dates, check_in_date: e.target.value })} />
+              <div className="space-y-1.5">
+                <label className="text-sm font-medium text-slate-300">Type de réservation</label>
+                <div className="flex gap-2">
+                  <button type="button"
+                    onClick={() => setDates({ ...dates, reservation_type: 'determined' })}
+                    className={`flex-1 py-2 rounded-xl text-xs font-medium transition-all flex items-center justify-center gap-1.5 border ${dates.reservation_type === 'determined' ? 'bg-cyan-500/20 border-cyan-500/50 text-cyan-300' : 'bg-slate-800/60 border-slate-700/50 text-slate-400 hover:bg-slate-700/50'}`}>
+                    <Calendar className="w-3.5 h-3.5" /> Déterminée
+                  </button>
+                  <button type="button"
+                    onClick={() => setDates({ ...dates, reservation_type: 'undetermined', check_out_date: '' })}
+                    className={`flex-1 py-2 rounded-xl text-xs font-medium transition-all flex items-center justify-center gap-1.5 border ${dates.reservation_type === 'undetermined' ? 'bg-purple-500/20 border-purple-500/50 text-purple-300' : 'bg-slate-800/60 border-slate-700/50 text-slate-400 hover:bg-slate-700/50'}`}>
+                    <Infinity className="w-3.5 h-3.5" /> Indéterminée
+                  </button>
+                </div>
+              </div>
+            </div>
+            {dates.reservation_type === 'determined' && (
+              <GlassInput label="Date de départ *" type="date" value={dates.check_out_date}
+                min={dates.check_in_date}
+                onChange={e => setDates({ ...dates, check_out_date: e.target.value })} />
+            )}
           </div>
           <GlassInput label="Nom de l'occupant *" value={form.occupant_name}
             onChange={e => setForm({ ...form, occupant_name: e.target.value })} required placeholder="Nom complet" />
