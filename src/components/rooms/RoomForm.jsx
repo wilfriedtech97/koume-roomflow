@@ -74,24 +74,27 @@ export default function RoomForm({ room, sites = [], buildings = [], onSubmit, o
         <div>
           <label className={labelClass}>Type de Chambre</label>
           <select className={inputClass} value={form.genre} onChange={e => setForm({ ...form, genre: e.target.value })}>
-            <option value="standard">CLASSIQUE</option>
-            <option value="vip">VIP</option>
-            <option value="couple">COUPLE</option>
-            <option value="prayer">PRIÈRE</option>
-            <option value="family">FAMILLE</option>
+            <option value="standard" className="bg-black text-white">CLASSIQUE</option>
+            <option value="vip" className="bg-black text-white">VIP</option>
+            <option value="couple" className="bg-black text-white">COUPLE</option>
+            <option value="prayer" className="bg-black text-white">PRIÈRE</option>
+            <option value="family" className="bg-black text-white">FAMILLE</option>
           </select>
+          <p className="text-xs text-slate-500 mt-0.5">Catégorie de la chambre</p>
         </div>
         <div>
           <label className={labelClass}>Statut</label>
           <select className={inputClass} value={form.status} onChange={e => setForm({ ...form, status: e.target.value })}>
-            <option value="available">Disponible</option>
-            <option value="occupied">Occupée</option>
-            <option value="unavailable">Indisponible</option>
+            <option value="available" className="bg-black text-white">Disponible</option>
+            <option value="occupied" className="bg-black text-white">Occupée</option>
+            <option value="unavailable" className="bg-black text-white">Indisponible</option>
           </select>
+          <p className="text-xs text-slate-500 mt-0.5">Disponibilité actuelle</p>
         </div>
         <div>
           <label className={labelClass}>Nombre de personnes</label>
-          <input className={inputClass} type="number" min="1" value={form.capacity} onChange={e => setForm({ ...form, capacity: e.target.value })} />
+          <input className={inputClass} type="number" min="1" value={form.capacity} onChange={e => setForm({ ...form, capacity: e.target.value })} placeholder="ex: 2" />
+          <p className="text-xs text-slate-500 mt-0.5">Capacité maximale d'accueil</p>
         </div>
       </div>
 
