@@ -282,8 +282,8 @@ export default function ReservationForm({ reservation, rooms = [], allReservatio
               className="w-4 h-4 rounded bg-slate-800 border-slate-600 text-cyan-500" />
             💍 Couple marié
           </label>
-          <GlassTextarea label="Notes" value={form.notes}
-            onChange={e => setForm({ ...form, notes: e.target.value })} placeholder="Notes..." />
+          <GlassTextarea label="Notes" hint="Informations supplémentaires (optionnel)" value={form.notes}
+            onChange={e => setForm({ ...form, notes: e.target.value })} placeholder="Observations ou instructions particulières..." />
           <div className="flex justify-end gap-3 pt-2">
             <GlassButton variant="secondary" type="button" onClick={onCancel}>Annuler</GlassButton>
             <GlassButton type="submit">{isEdit ? 'Mettre à jour' : 'Confirmer la réservation'}</GlassButton>
