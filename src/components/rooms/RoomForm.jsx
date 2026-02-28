@@ -48,6 +48,7 @@ export default function RoomForm({ room, sites = [], buildings = [], onSubmit, o
       <div>
         <label className={labelClass}>Numéro de Chambre *</label>
         <input className={inputClass} value={form.number} onChange={e => setForm({ ...form, number: e.target.value })} required placeholder="ex: 101" />
+        <p className="text-xs text-slate-500 mt-0.5">Identifiant unique de la chambre</p>
       </div>
 
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
