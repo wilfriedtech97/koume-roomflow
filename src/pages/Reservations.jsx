@@ -120,23 +120,47 @@ export default function Reservations() {
           { value: '', label: 'All Types' }, { value: 'man', label: 'Man' }, { value: 'woman', label: 'Woman' }, { value: 'couple', label: 'Couple' }, { value: 'family', label: 'Family' },
         ]} />
         {/* Date From */}
-        <label className="relative cursor-pointer group">
-          <div className="flex items-center gap-2 px-3 py-2.5 rounded-md bg-black border border-slate-600 hover:border-cyan-500/60 transition-colors">
+        <div className="relative" ref={calFromRef}>
+          <div
+            className="flex items-center gap-2 px-3 py-2.5 rounded-md bg-black border border-slate-600 hover:border-cyan-500/60 transition-colors cursor-pointer"
+            onClick={() => { setShowCalFrom(v => !v); setShowCalTo(false); }}
+          >
             <Calendar className="w-4 h-4 text-cyan-400 shrink-0" />
-            <span className={`text-sm ${dateFrom ? 'text-white' : 'text-slate-500'}`}>{dateFrom ? moment(dateFrom).format('DD MMM YYYY') : 'De (From)'}</span>
-            {dateFrom && <button type="button" onClick={e => { e.preventDefault(); setDateFrom(''); }} className="ml-auto text-slate-500 hover:text-white"><X className="w-3 h-3" /></button>}
+            <span className={`text-sm flex-1 ${dateFrom ? 'text-white' : 'text-slate-500'}`}>{dateFrom ? moment(dateFrom).format('DD MMM YYYY') : 'De (From)'}</span>
+            {dateFrom && <button type="button" onClick={e => { e.stopPropagation(); setDateFrom(''); }} className="text-slate-500 hover:text-white"><X className="w-3 h-3" /></button>}
           </div>
-          <input type="date" value={dateFrom} onChange={e => setDateFrom(e.target.value)} className="absolute inset-0 opacity-0 cursor-pointer w-full" />
-        </label>
+          {showCalFrom && (
+            <div className="absolute z-50 top-full mt-1 bg-[#0d1b2e] border border-slate-700 rounded-xl shadow-2xl">
+              <CalendarPicker
+                mode="single"
+                selected={dateFrom ? new Date(dateFrom) : undefined}
+                onSelect={(d) => { setDateFrom(d ? moment(d).format('YYYY-MM-DD') : ''); setShowCalFrom(false); }}
+                className="text-white"
+              />
+            </div>
+          )}
+        </div>
         {/* Date To */}
-        <label className="relative cursor-pointer group">
-          <div className="flex items-center gap-2 px-3 py-2.5 rounded-md bg-black border border-slate-600 hover:border-cyan-500/60 transition-colors">
+        <div className="relative" ref={calToRef}>
+          <div
+            className="flex items-center gap-2 px-3 py-2.5 rounded-md bg-black border border-slate-600 hover:border-rose-500/60 transition-colors cursor-pointer"
+            onClick={() => { setShowCalTo(v => !v); setShowCalFrom(false); }}
+          >
             <Calendar className="w-4 h-4 text-rose-400 shrink-0" />
-            <span className={`text-sm ${dateTo ? 'text-white' : 'text-slate-500'}`}>{dateTo ? moment(dateTo).format('DD MMM YYYY') : 'À (To)'}</span>
-            {dateTo && <button type="button" onClick={e => { e.preventDefault(); setDateTo(''); }} className="ml-auto text-slate-500 hover:text-white"><X className="w-3 h-3" /></button>}
+            <span className={`text-sm flex-1 ${dateTo ? 'text-white' : 'text-slate-500'}`}>{dateTo ? moment(dateTo).format('DD MMM YYYY') : 'À (To)'}</span>
+            {dateTo && <button type="button" onClick={e => { e.stopPropagation(); setDateTo(''); }} className="text-slate-500 hover:text-white"><X className="w-3 h-3" /></button>}
           </div>
-          <input type="date" value={dateTo} onChange={e => setDateTo(e.target.value)} className="absolute inset-0 opacity-0 cursor-pointer w-full" />
-        </label>
+          {showCalTo && (
+            <div className="absolute z-50 top-full mt-1 right-0 bg-[#0d1b2e] border border-slate-700 rounded-xl shadow-2xl">
+              <CalendarPicker
+                mode="single"
+                selected={dateTo ? new Date(dateTo) : undefined}
+                onSelect={(d) => { setDateTo(d ? moment(d).format('YYYY-MM-DD') : ''); setShowCalTo(false); }}
+                className="text-white"
+              />
+            </div>
+          )}
+        </div>
       </div>
 
       {filtered.length === 0 ? (
