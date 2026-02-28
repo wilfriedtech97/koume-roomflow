@@ -118,7 +118,7 @@ export default function Reservations() {
         </div>
       )}
 
-      <GlassModal open={modal.open} onClose={() => setModal({ open: false, reservation: null })} title={modal.reservation ? 'Edit Reservation' : 'New Reservation'} maxWidth="max-w-xl">
+      <GlassModal open={modal.open} onClose={() => setModal({ open: false, reservation: null })} title={modal.reservation ? 'Edit Reservation' : 'New Reservation'} maxWidth="max-w-2xl">
         <ReservationForm
           reservation={modal.reservation}
           rooms={rooms}

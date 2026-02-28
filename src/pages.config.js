@@ -47,28 +47,28 @@
  *
  * The mainPage value must match a key in the PAGES object exactly.
  */
-import Dashboard from './pages/Dashboard';
-import Sites from './pages/Sites';
+import Admin from './pages/Admin';
 import Buildings from './pages/Buildings';
-import Rooms from './pages/Rooms';
+import Dashboard from './pages/Dashboard';
+import History from './pages/History';
 import Occupants from './pages/Occupants';
 import Reservations from './pages/Reservations';
-import History from './pages/History';
+import Rooms from './pages/Rooms';
 import SearchPage from './pages/SearchPage';
-import Admin from './pages/Admin';
+import Sites from './pages/Sites';
 import __Layout from './Layout.jsx';
 
 
 export const PAGES = {
-    "Dashboard": Dashboard,
-    "Sites": Sites,
+    "Admin": Admin,
     "Buildings": Buildings,
-    "Rooms": Rooms,
+    "Dashboard": Dashboard,
+    "History": History,
     "Occupants": Occupants,
     "Reservations": Reservations,
-    "History": History,
+    "Rooms": Rooms,
     "SearchPage": SearchPage,
-    "Admin": Admin,
+    "Sites": Sites,
 }
 
 export const pagesConfig = {
