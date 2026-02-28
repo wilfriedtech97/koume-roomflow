@@ -84,12 +84,10 @@ export default function Reservations() {
 
   if (isLoading) return <LoadingSpinner />;
 
-  const roomGenreMap = Object.fromEntries(rooms.map(r => [r.id, r.genre]));
-
   const filtered = reservations.filter(r => {
     if (search && !r.occupant_name?.toLowerCase().includes(search.toLowerCase())) return false;
     if (statusFilter && r.status !== statusFilter) return false;
-    if (typeFilter && roomGenreMap[r.room_id] !== typeFilter) return false;
+    if (typeFilter && r.occupant_type !== typeFilter) return false;
     if (dateFrom && r.check_out_date && r.check_out_date < dateFrom) return false;
     if (dateTo && r.check_in_date && r.check_in_date > dateTo) return false;
     return true;
