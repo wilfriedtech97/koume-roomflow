@@ -162,7 +162,8 @@ export default function ReservationForm({ reservation, rooms = [], allReservatio
           <div className="flex items-center justify-between">
             <div className="text-sm text-slate-400">
               <span className="text-cyan-400 font-semibold">{matchingRooms.length}</span> chambre(s) disponible(s)
-              {criteria.check_in_date && <span className="ml-2 text-slate-500">· du {criteria.check_in_date}{criteria.reservation_type === 'determined' && criteria.check_out_date ? ` au ${criteria.check_out_date}` : ' (indéterminée)'}</span>}
+              {criteria.genre && <span className="ml-2 text-slate-500">· {ROOM_TYPE_MAP[criteria.genre] || criteria.genre}</span>}
+              <span className="ml-2 text-slate-500">· {criteria.num_people} pers.</span>
             </div>
             <button type="button" onClick={() => { setStep(1); setSelectedRoom(null); }} className="flex items-center gap-1 text-xs text-slate-400 hover:text-white transition-colors">
               <ArrowLeft className="w-3.5 h-3.5" /> Modifier
