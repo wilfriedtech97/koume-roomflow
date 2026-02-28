@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { base44 } from '@/api/base44Client';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import { CalendarCheck, Plus, Pencil, Trash2, Search, X } from 'lucide-react';
+import { CalendarCheck, Plus, Pencil, Trash2, Search, X, Calendar } from 'lucide-react';
 import PageHeader from '../components/ui-custom/PageHeader';
 import GlassButton from '../components/ui-custom/GlassButton';
 import GlassModal from '../components/ui-custom/GlassModal';
