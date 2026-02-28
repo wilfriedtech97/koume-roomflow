@@ -263,13 +263,13 @@ export default function ReservationForm({ reservation, rooms = [], allReservatio
                 onChange={e => setDates({ ...dates, check_out_date: e.target.value })} />
             )}
           </div>
-          <GlassInput label="Nom de l'occupant *" value={form.occupant_name}
-            onChange={e => setForm({ ...form, occupant_name: e.target.value })} required placeholder="Nom complet" />
+          <GlassInput label="Nom de l'occupant *" hint="Prénom et nom complet" value={form.occupant_name}
+            onChange={e => setForm({ ...form, occupant_name: e.target.value })} required placeholder="ex: Kouamé Jean" />
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-            <GlassSelect label="Type d'occupant *" value={form.occupant_type}
+            <GlassSelect label="Type d'occupant *" hint="Catégorie de l'occupant" value={form.occupant_type}
               onChange={e => setForm({ ...form, occupant_type: e.target.value })}
               options={OCCUPANT_TYPES} />
-            <GlassSelect label="Statut" value={form.status}
+            <GlassSelect label="Statut" hint="État de la réservation" value={form.status}
               onChange={e => setForm({ ...form, status: e.target.value })} options={[
                 { value: 'pending', label: 'En attente' },
                 { value: 'confirmed', label: 'Confirmée' },
