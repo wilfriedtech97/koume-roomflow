@@ -108,11 +108,14 @@ export default function Layout({ children, currentPageName }) {
                       key={item.page}
                       to={createPageUrl(item.page)}
                       onClick={() => setSidebarOpen(false)}
-                      className={`flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium transition-all ${
-                        isActive
-                          ? 'bg-gradient-to-r from-cyan-500/15 to-blue-500/10 text-cyan-400 border border-cyan-500/20'
-                          : 'text-white hover:bg-slate-800/50 hover:text-cyan-300'
-                      }`}
+                      style={isActive ? {
+                background: 'var(--sidebar-active-bg)',
+                borderColor: 'var(--sidebar-active-border)',
+                color: 'var(--sidebar-active-text)',
+              } : {color:'var(--sidebar-text)'}}
+              className={`flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium transition-all border ${
+                isActive ? 'border' : 'border-transparent hover:bg-[var(--sidebar-hover)]'
+              }`}
                     >
                       <item.icon className="w-4.5 h-4.5" />
                       {item.name}
