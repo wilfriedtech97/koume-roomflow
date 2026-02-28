@@ -178,12 +178,3 @@ export default function SearchPage() {
     </div>
   );
 }
-
-function Detail({ label, value }) {
-  return (
-    <div>
-      <span className="text-slate-500">{label}: </span>
-      <span className="text-slate-300 capitalize">{value || '—'}</span>
-    </div>
-  );
-}
