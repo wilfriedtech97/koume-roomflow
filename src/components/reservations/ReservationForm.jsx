@@ -43,11 +43,15 @@ export default function ReservationForm({ reservation, rooms = [], allReservatio
 
   // Step 1: criteria
   const [criteria, setCriteria] = useState({
+    genre: '',
+    num_people: 1,
+  });
+
+  // Dates & reservation type (step 3)
+  const [dates, setDates] = useState({
     check_in_date: reservation?.check_in_date || '',
     check_out_date: reservation?.check_out_date || '',
-    reservation_type: 'determined', // determined | undetermined
-    genre: reservation ? '' : '',
-    num_people: 1,
+    reservation_type: reservation?.check_out_date ? 'determined' : 'determined',
   });
 
   // Step 2: room selection
