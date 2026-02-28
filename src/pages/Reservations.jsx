@@ -25,6 +25,7 @@ export default function Reservations() {
 
   const { data: reservations = [], isLoading } = useQuery({ queryKey: ['reservations'], queryFn: () => base44.entities.Reservation.list('-created_date') });
   const { data: rooms = [] } = useQuery({ queryKey: ['rooms'], queryFn: () => base44.entities.Room.list() });
+  const { data: occupants = [] } = useQuery({ queryKey: ['occupants'], queryFn: () => base44.entities.Occupant.list() });
 
   const saveMut = useMutation({
     mutationFn: async (data) => {
