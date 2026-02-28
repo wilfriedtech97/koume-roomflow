@@ -146,6 +146,7 @@ export default function Reservations() {
           reservation={modal.reservation}
           rooms={rooms}
           allReservations={reservations}
+          existingOccupants={occupants}
           onSubmit={(d) => saveMut.mutate(d)}
           onCancel={() => setModal({ open: false, reservation: null })}
         />
