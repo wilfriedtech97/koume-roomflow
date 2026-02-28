@@ -25,20 +25,20 @@ export default function BuildingForm({ building, sites = [], onSubmit, onCancel 
 
   return (
     <form onSubmit={handleSubmit} className="space-y-4">
-      <GlassInput label="Building Name *" value={form.name} onChange={e => setForm({ ...form, name: e.target.value })} required placeholder="Enter building name" />
-      <GlassSelect label="Site *" value={form.site_id} onChange={e => setForm({ ...form, site_id: e.target.value })} options={[
+      <GlassInput label="Building Name *" hint="Unique name to identify this building" value={form.name} onChange={e => setForm({ ...form, name: e.target.value })} required placeholder="e.g. Block A" />
+      <GlassSelect label="Site *" hint="Select the site this building belongs to" value={form.site_id} onChange={e => setForm({ ...form, site_id: e.target.value })} options={[
         { value: '', label: 'Select a site' },
         ...sites.map(s => ({ value: s.id, label: s.name })),
       ]} />
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-        <GlassInput label="Floors" type="number" value={form.floors} onChange={e => setForm({ ...form, floors: e.target.value })} placeholder="Number of floors" />
-        <GlassSelect label="Status" value={form.status} onChange={e => setForm({ ...form, status: e.target.value })} options={[
+        <GlassInput label="Floors" hint="Total number of floors" type="number" value={form.floors} onChange={e => setForm({ ...form, floors: e.target.value })} placeholder="e.g. 3" />
+        <GlassSelect label="Status" hint="Current operational status" value={form.status} onChange={e => setForm({ ...form, status: e.target.value })} options={[
           { value: 'active', label: 'Active' },
           { value: 'inactive', label: 'Inactive' },
           { value: 'maintenance', label: 'Maintenance' },
         ]} />
       </div>
-      <GlassTextarea label="Description" value={form.description} onChange={e => setForm({ ...form, description: e.target.value })} placeholder="Description..." />
+      <GlassTextarea label="Description" hint="Optional details about this building" value={form.description} onChange={e => setForm({ ...form, description: e.target.value })} placeholder="Brief description..." />
       <div className="flex justify-end gap-3 pt-2">
         <GlassButton variant="secondary" type="button" onClick={onCancel}>Cancel</GlassButton>
         <GlassButton type="submit">{building ? 'Update Building' : 'Create Building'}</GlassButton>
