@@ -81,7 +81,7 @@ export default function Layout({ children, currentPageName }) {
       </AnimatePresence>
 
       {/* Sidebar */}
-      <aside className={`fixed lg:sticky top-0 left-0 h-screen w-64 bg-[#080d1c]/95 border-r border-slate-800/50 backdrop-blur-xl z-50 flex flex-col transition-transform duration-300 ${sidebarOpen ? 'translate-x-0' : '-translate-x-full lg:translate-x-0'}`}>
+      <aside className={`fixed lg:sticky top-0 left-0 h-screen w-64 backdrop-blur-xl z-50 flex flex-col transition-transform duration-300 border-r ${sidebarOpen ? 'translate-x-0' : '-translate-x-full lg:translate-x-0'}`} style={{background:'var(--sidebar-bg)', borderColor:'var(--sidebar-border)'}}>
         <div className="p-5 border-b border-slate-800/50">
           <div className="flex items-center gap-3">
             <div className="w-9 h-9 rounded-xl bg-gradient-to-br from-cyan-500 to-blue-600 flex items-center justify-center">
