@@ -82,7 +82,7 @@ export default function Layout({ children, currentPageName }) {
 
       {/* Sidebar */}
       <aside className={`fixed lg:sticky top-0 left-0 h-screen w-64 backdrop-blur-xl z-50 flex flex-col transition-transform duration-300 border-r ${sidebarOpen ? 'translate-x-0' : '-translate-x-full lg:translate-x-0'}`} style={{background:'var(--sidebar-bg)', borderColor:'var(--sidebar-border)'}}>
-        <div className="p-5 border-b border-slate-800/50">
+        <div className="p-5 border-b" style={{borderColor:'var(--sidebar-border)'}}>
           <div className="flex items-center gap-3">
             <div className="w-9 h-9 rounded-xl bg-gradient-to-br from-cyan-500 to-blue-600 flex items-center justify-center">
               <Building2 className="w-5 h-5 text-white" />
