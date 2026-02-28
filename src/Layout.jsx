@@ -134,13 +134,26 @@ export default function Layout({ children, currentPageName }) {
               {(user?.full_name || 'U')[0].toUpperCase()}
             </div>
             <div className="flex-1 min-w-0">
-              <p className="text-sm font-medium text-white truncate">{user?.full_name || 'User'}</p>
-              <p className="text-[10px] text-slate-500 capitalize">{role}</p>
+              <p className="text-sm font-medium truncate" style={{color:'var(--text-primary)'}}>{user?.full_name || 'User'}</p>
+              <p className="text-[10px] capitalize" style={{color:'var(--text-muted)'}}>{role}</p>
             </div>
+            {/* Theme toggle */}
+            <button
+              onClick={toggle}
+              title={isDark ? 'Switch to Light' : 'Switch to Dark'}
+              className="w-8 h-8 rounded-lg flex items-center justify-center transition-all hover:scale-110 shrink-0"
+              style={{background: isDark ? 'rgba(251,191,36,0.12)' : 'rgba(8,145,178,0.1)', border:'1px solid', borderColor: isDark ? 'rgba(251,191,36,0.3)' : 'rgba(8,145,178,0.25)'}}
+            >
+              {isDark
+                ? <Sun className="w-4 h-4 text-amber-400" />
+                : <Moon className="w-4 h-4 text-cyan-600" />
+              }
+            </button>
           </div>
           <button
             onClick={() => base44.auth.logout()}
-            className="w-full flex items-center gap-2 px-3 py-2 text-xs text-slate-400 hover:text-rose-400 hover:bg-rose-500/10 rounded-lg transition-colors"
+            className="w-full flex items-center gap-2 px-3 py-2 text-xs rounded-lg transition-colors hover:bg-rose-500/10 hover:text-rose-500"
+            style={{color:'var(--text-muted)'}}
           >
             <LogOut className="w-3.5 h-3.5" /> Sign Out
           </button>
