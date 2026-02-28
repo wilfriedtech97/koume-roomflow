@@ -83,7 +83,9 @@ export default function SearchPage() {
             { value: 'reservations', label: 'Reservations' },
             { value: 'sites', label: 'Sites' },
           ]} />
+          </div>
         </div>
+        <p className="text-xs text-slate-500">Tapez un nom, un numéro ou un mot-clé pour trouver des résultats</p>
       </div>
 
       {!q ? (
