@@ -258,7 +258,7 @@ export default function ReservationForm({ reservation, rooms = [], allReservatio
               </div>
             </div>
             {dates.reservation_type === 'determined' && (
-              <GlassInput label="Date de départ *" type="date" value={dates.check_out_date}
+              <GlassInput label="Date de départ *" hint="Jour de sortie de la chambre" type="date" value={dates.check_out_date}
                 min={dates.check_in_date}
                 onChange={e => setDates({ ...dates, check_out_date: e.target.value })} />
             )}
