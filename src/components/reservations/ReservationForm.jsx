@@ -137,8 +137,8 @@ export default function ReservationForm({ reservation, rooms = [], allReservatio
             <GlassSelect label="Type de chambre" hint="Filtrer par catégorie de chambre" value={criteria.genre}
               onChange={e => setCriteria({ ...criteria, genre: e.target.value })}
               options={ROOM_GENRES} />
-            <div className="space-y-1.5">
-              <label className="text-sm font-medium text-slate-300">Nombre de personnes</label>
+            <div className="space-y-1">
+              <label className="text-xs font-semibold text-slate-300 uppercase tracking-wide">Nombre de personnes</label>
               <div className="flex items-center gap-3">
                 <button type="button" onClick={() => setCriteria(c => ({ ...c, num_people: Math.max(1, c.num_people - 1) }))}
                   className="w-9 h-9 rounded-xl bg-slate-800 border border-slate-700 text-white hover:bg-slate-700 font-bold flex items-center justify-center">−</button>
