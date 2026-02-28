@@ -147,6 +147,7 @@ export default function ReservationForm({ reservation, rooms = [], allReservatio
                   className="w-9 h-9 rounded-xl bg-slate-800 border border-slate-700 text-white hover:bg-slate-700 font-bold flex items-center justify-center">+</button>
                 <span className="text-sm text-slate-400 ml-1">personne(s)</span>
               </div>
+              <p className="text-xs text-slate-500">Capacité requise de la chambre</p>
             </div>
           </div>
           <div className="flex justify-end gap-3 pt-2">
