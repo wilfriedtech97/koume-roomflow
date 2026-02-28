@@ -194,7 +194,7 @@ export default function ReservationForm({ reservation, rooms = [], allReservatio
                     <div className="flex flex-wrap gap-3">
                       <FacilityIcon has={room.hot_water} Icon={Droplets} label="Eau chaude" />
                       <FacilityIcon has={room.internal_shower} Icon={ShowerHead} label="Douche" />
-                      <FacilityIcon has={room.bathroom} Icon={BathIcon} label="Salle de bain" />
+                      <FacilityIcon has={room.bathroom} Icon={Bath} label="Salle de bain" />
                       <FacilityIcon has={room.fan} Icon={Fan} label="Ventilateur" />
                       <FacilityIcon has={room.lighting} Icon={Lightbulb} label="Éclairage" />
                       <FacilityIcon has={room.internet} Icon={Wifi} label="Internet" />
