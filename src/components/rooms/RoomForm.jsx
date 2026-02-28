@@ -1,16 +1,17 @@
 import React, { useState } from 'react';
-import GlassInput from '../ui-custom/GlassInput';
-import GlassSelect from '../ui-custom/GlassSelect';
 import GlassButton from '../ui-custom/GlassButton';
 
 const facilities = [
-  { key: 'hot_water', label: 'Hot Water' },
-  { key: 'internal_shower', label: 'Internal Shower' },
-  { key: 'bathroom', label: 'Bathroom' },
-  { key: 'fan', label: 'Fan' },
-  { key: 'lighting', label: 'Lighting' },
+  { key: 'hot_water', label: 'Eau Chaude' },
+  { key: 'internal_shower', label: 'Douche Interne' },
+  { key: 'bathroom', label: 'Salle de Bain' },
+  { key: 'fan', label: 'Ventilateur' },
+  { key: 'lighting', label: 'Éclairage' },
   { key: 'internet', label: 'Internet' },
 ];
+
+const inputClass = "w-full px-4 py-2.5 rounded-xl bg-white border border-slate-300 text-black text-sm focus:outline-none focus:ring-2 focus:ring-cyan-400/50";
+const labelClass = "text-sm font-semibold text-black mb-1.5 block";
 
 export default function RoomForm({ room, sites = [], buildings = [], onSubmit, onCancel }) {
   const [form, setForm] = useState({
@@ -19,7 +20,7 @@ export default function RoomForm({ room, sites = [], buildings = [], onSubmit, o
     building_id: room?.building_id || '',
     genre: room?.genre || 'standard',
     status: room?.status || 'available',
-    capacity: room?.capacity || 1,
+    capacity: room?.capacity || room?.bed_count || 1,
     hot_water: room?.hot_water || false,
     internal_shower: room?.internal_shower || false,
     bathroom: room?.bathroom || false,
@@ -44,51 +45,73 @@ export default function RoomForm({ room, sites = [], buildings = [], onSubmit, o
 
   return (
     <form onSubmit={handleSubmit} className="space-y-4">
-      <GlassInput label="Room Number *" value={form.number} onChange={e => setForm({ ...form, number: e.target.value })} required placeholder="e.g. 101" />
-      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-        <GlassSelect label="Site *" value={form.site_id} onChange={e => setForm({ ...form, site_id: e.target.value, building_id: '' })} options={[
-          { value: '', label: 'Select site' },
-          ...sites.map(s => ({ value: s.id, label: s.name })),
-        ]} />
-        <GlassSelect label="Building *" value={form.building_id} onChange={e => setForm({ ...form, building_id: e.target.value })} options={[
-          { value: '', label: 'Select building' },
-          ...filteredBuildings.map(b => ({ value: b.id, label: b.name })),
-        ]} />
-      </div>
-      <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-        <GlassSelect label="Genre" value={form.genre} onChange={e => setForm({ ...form, genre: e.target.value })} options={[
-          { value: 'standard', label: 'Standard' },
-          { value: 'vip', label: 'VIP' },
-          { value: 'couple', label: 'Couple' },
-          { value: 'prayer', label: 'Prayer' },
-          { value: 'family', label: 'Family' },
-        ]} />
-        <GlassSelect label="Status" value={form.status} onChange={e => setForm({ ...form, status: e.target.value })} options={[
-          { value: 'available', label: 'Available' },
-          { value: 'occupied', label: 'Occupied' },
-          { value: 'unavailable', label: 'Unavailable' },
-        ]} />
-        <GlassInput label="Nombre de personnes" type="number" min="1" value={form.capacity} onChange={e => setForm({ ...form, capacity: e.target.value })} />
-      </div>
       <div>
-        <label className="text-sm font-medium text-slate-300 mb-2 block">Facilities</label>
+        <label className={labelClass}>Numéro de Chambre *</label>
+        <input className={inputClass} value={form.number} onChange={e => setForm({ ...form, number: e.target.value })} required placeholder="ex: 101" />
+      </div>
+
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+        <div>
+          <label className={labelClass}>Site *</label>
+          <select className={inputClass} value={form.site_id} onChange={e => setForm({ ...form, site_id: e.target.value, building_id: '' })}>
+            <option value="">Sélectionner un site</option>
+            {sites.map(s => <option key={s.id} value={s.id}>{s.name}</option>)}
+          </select>
+        </div>
+        <div>
+          <label className={labelClass}>Bâtiment *</label>
+          <select className={inputClass} value={form.building_id} onChange={e => setForm({ ...form, building_id: e.target.value })}>
+            <option value="">Sélectionner un bâtiment</option>
+            {filteredBuildings.map(b => <option key={b.id} value={b.id}>{b.name}</option>)}
+          </select>
+        </div>
+      </div>
+
+      <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+        <div>
+          <label className={labelClass}>Type de Chambre</label>
+          <select className={inputClass} value={form.genre} onChange={e => setForm({ ...form, genre: e.target.value })}>
+            <option value="standard">CLASSIQUE</option>
+            <option value="vip">VIP</option>
+            <option value="couple">COUPLE</option>
+            <option value="prayer">PRIÈRE</option>
+            <option value="family">FAMILLE</option>
+          </select>
+        </div>
+        <div>
+          <label className={labelClass}>Statut</label>
+          <select className={inputClass} value={form.status} onChange={e => setForm({ ...form, status: e.target.value })}>
+            <option value="available">Disponible</option>
+            <option value="occupied">Occupée</option>
+            <option value="unavailable">Indisponible</option>
+          </select>
+        </div>
+        <div>
+          <label className={labelClass}>Nombre de personnes</label>
+          <input className={inputClass} type="number" min="1" value={form.capacity} onChange={e => setForm({ ...form, capacity: e.target.value })} />
+        </div>
+      </div>
+
+      <div>
+        <label className={labelClass}>Équipements</label>
         <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
           {facilities.map(f => (
-            <label key={f.key} className="flex items-center gap-2 text-sm text-slate-300 cursor-pointer">
+            <label key={f.key} className="flex items-center gap-2 text-sm font-medium text-black cursor-pointer">
               <input
                 type="checkbox"
                 checked={form[f.key]}
                 onChange={e => setForm({ ...form, [f.key]: e.target.checked })}
-                className="w-4 h-4 rounded bg-slate-800 border-slate-600 text-cyan-500 focus:ring-cyan-500/30"
+                className="w-4 h-4 rounded border-slate-400 text-cyan-500 focus:ring-cyan-500/30"
               />
               {f.label}
             </label>
           ))}
         </div>
       </div>
+
       <div className="flex justify-end gap-3 pt-2">
-        <GlassButton variant="secondary" type="button" onClick={onCancel}>Cancel</GlassButton>
-        <GlassButton type="submit">{room ? 'Update Room' : 'Create Room'}</GlassButton>
+        <GlassButton variant="secondary" type="button" onClick={onCancel}>Annuler</GlassButton>
+        <GlassButton type="submit">{room ? 'Mettre à jour' : 'Créer la Chambre'}</GlassButton>
       </div>
     </form>
   );
