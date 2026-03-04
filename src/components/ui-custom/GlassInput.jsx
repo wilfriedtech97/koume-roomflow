@@ -1,6 +1,7 @@
 import React from 'react';
 
 export default function GlassInput({ label, hint, className = '', ...props }) {
+  // GlassInput component
   return (
     <div className="space-y-1">
       {label && (
