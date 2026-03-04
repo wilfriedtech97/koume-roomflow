@@ -3,7 +3,7 @@ import GlassInput from '../ui-custom/GlassInput';
 import GlassSelect from '../ui-custom/GlassSelect';
 import GlassTextarea from '../ui-custom/GlassTextarea';
 import GlassButton from '../ui-custom/GlassButton';
-import { Search, CheckCircle2, Wifi, Droplets, ShowerHead, Fan, Lightbulb, Bath, Users, ArrowLeft, Calendar, Infinity, UserSearch, X } from 'lucide-react';
+import { Search, CheckCircle2, Wifi, Droplets, ShowerHead, Fan, Lightbulb, Bath, Users, ArrowLeft, Calendar, Infinity, UserSearch, X, Plus, Trash2 } from 'lucide-react';
 
 const ROOM_TYPE_MAP = {
   standard: 'Classique',
@@ -29,12 +29,102 @@ const ROOM_GENRES = [
   { value: 'family', label: 'Family' },
 ];
 
+const emptyOccupant = () => ({ occupant_name: '', occupant_phone: '', occupant_type: 'man', is_married_couple: false });
+
 function FacilityIcon({ has, Icon, label }) {
   return (
     <span className={`flex items-center gap-1 text-xs ${has ? 'text-cyan-400' : 'text-slate-600'}`} title={label}>
       <Icon className="w-3.5 h-3.5" />
       <span className="hidden sm:inline">{label}</span>
     </span>
+  );
+}
+
+function OccupantRow({ occ, index, onChange, onRemove, canRemove, existingOccupants }) {
+  const [search, setSearch] = useState('');
+  const [showDrop, setShowDrop] = useState(false);
+
+  const filtered = useMemo(() => {
+    if (!search.trim()) return existingOccupants.slice(0, 8);
+    const q = search.toLowerCase();
+    return existingOccupants.filter(o =>
+      o.full_name?.toLowerCase().includes(q) || o.phone?.toLowerCase().includes(q)
+    ).slice(0, 8);
+  }, [search, existingOccupants]);
+
+  const selectExisting = (o) => {
+    onChange({ ...occ, occupant_name: o.full_name || '', occupant_phone: o.phone || '' });
+    setSearch(o.full_name || '');
+    setShowDrop(false);
+  };
+
+  return (
+    <div className="p-4 rounded-xl bg-slate-900/60 border border-slate-700/50 space-y-3">
+      <div className="flex items-center justify-between">
+        <span className="text-xs font-semibold text-cyan-400 uppercase tracking-wider">Occupant {index + 1}</span>
+        {canRemove && (
+          <button type="button" onClick={onRemove} className="text-rose-400 hover:text-rose-300 transition-colors">
+            <Trash2 className="w-4 h-4" />
+          </button>
+        )}
+      </div>
+
+      {/* Search existing */}
+      <div className="relative">
+        <div className="relative">
+          <UserSearch className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-500" />
+          <input
+            className="w-full pl-10 pr-9 py-2 rounded-md bg-black border border-slate-600 text-white text-sm placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-cyan-500/50 focus:border-cyan-500/60 transition-colors"
+            placeholder="Rechercher occupant existant..."
+            value={search}
+            onChange={e => { setSearch(e.target.value); setShowDrop(true); }}
+            onFocus={() => setShowDrop(true)}
+          />
+          {search && (
+            <button type="button" onClick={() => { setSearch(''); onChange({ ...occ, occupant_name: '', occupant_phone: '' }); }} className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-500 hover:text-white">
+              <X className="w-3.5 h-3.5" />
+            </button>
+          )}
+        </div>
+        {showDrop && filtered.length > 0 && (
+          <div className="absolute z-50 w-full mt-1 bg-[#0d1324] border border-slate-700 rounded-xl shadow-2xl overflow-hidden">
+            {filtered.map(o => (
+              <button key={o.id} type="button" onMouseDown={() => selectExisting(o)}
+                className="w-full text-left px-4 py-2.5 hover:bg-slate-800/60 transition-colors flex items-center justify-between">
+                <div>
+                  <p className="text-sm text-white font-medium">{o.full_name}</p>
+                  <p className="text-xs text-slate-500">{o.phone || 'Pas de téléphone'}</p>
+                </div>
+                <span className="text-xs px-2 py-0.5 rounded-full bg-slate-700 text-slate-300 capitalize">{o.gender}</span>
+              </button>
+            ))}
+          </div>
+        )}
+      </div>
+
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+        <GlassInput label="Nom *" value={occ.occupant_name}
+          onChange={e => { onChange({ ...occ, occupant_name: e.target.value }); setShowDrop(false); }}
+          required placeholder="Prénom et nom complet" />
+        <GlassInput label="Téléphone" value={occ.occupant_phone}
+          onChange={e => onChange({ ...occ, occupant_phone: e.target.value })}
+          placeholder="ex: +225 07 00 00 00" />
+      </div>
+
+      <div className="flex items-center gap-4">
+        <div className="flex-1">
+          <GlassSelect label="Type" value={occ.occupant_type}
+            onChange={e => onChange({ ...occ, occupant_type: e.target.value })}
+            options={OCCUPANT_TYPES} />
+        </div>
+        <label className="flex items-center gap-2 text-sm text-slate-300 cursor-pointer mt-5">
+          <input type="checkbox" checked={occ.is_married_couple}
+            onChange={e => onChange({ ...occ, is_married_couple: e.target.checked })}
+            className="w-4 h-4 rounded bg-slate-800 border-slate-600 text-cyan-500" />
+          💍 Marié(e)
+        </label>
+      </div>
+    </div>
   );
 }
 
@@ -50,6 +140,7 @@ export default function ReservationForm({ reservation, rooms = [], allReservatio
   const [step, setStep] = useState(isEdit ? 2 : 1);
   const [selectedRoom, setSelectedRoom] = useState(isEdit ? rooms.find(r => r.id === reservation.room_id) || null : null);
 
+  // For edit: single occupant form
   const [form, setForm] = useState({
     occupant_name: reservation?.occupant_name || '',
     occupant_phone: reservation?.occupant_phone || '',
@@ -59,11 +150,13 @@ export default function ReservationForm({ reservation, rooms = [], allReservatio
     notes: reservation?.notes || '',
   });
 
-  const [occupantSearch, setOccupantSearch] = useState('');
-  const [showOccupantDropdown, setShowOccupantDropdown] = useState(false);
+  // For create: multiple occupants
+  const [occupants, setOccupants] = useState([emptyOccupant()]);
+  const [status, setStatus] = useState('pending');
+  const [notes, setNotes] = useState('');
+
   const [error, setError] = useState('');
 
-  // Rooms with capacity >= num_people
   const matchingRooms = useMemo(() => {
     return rooms.filter(room => {
       if (room.status === 'unavailable') return false;
@@ -74,39 +167,21 @@ export default function ReservationForm({ reservation, rooms = [], allReservatio
     });
   }, [criteria, rooms]);
 
-  // Filtered existing occupants for search
-  const filteredOccupants = useMemo(() => {
-    if (!occupantSearch.trim()) return existingOccupants.slice(0, 8);
-    const q = occupantSearch.toLowerCase();
-    return existingOccupants.filter(o =>
-      o.full_name?.toLowerCase().includes(q) || o.phone?.toLowerCase().includes(q)
-    ).slice(0, 8);
-  }, [occupantSearch, existingOccupants]);
-
-  const selectOccupant = (occ) => {
-    setForm(f => ({
-      ...f,
-      occupant_name: occ.full_name || '',
-      occupant_phone: occ.phone || '',
-    }));
-    setOccupantSearch(occ.full_name || '');
-    setShowOccupantDropdown(false);
-  };
-
-  const clearSelectedOccupant = () => {
-    setForm(f => ({ ...f, occupant_name: '', occupant_phone: '' }));
-    setOccupantSearch('');
-  };
+  const addOccupant = () => setOccupants(prev => [...prev, emptyOccupant()]);
+  const removeOccupant = (i) => setOccupants(prev => prev.filter((_, idx) => idx !== i));
+  const updateOccupant = (i, data) => setOccupants(prev => prev.map((o, idx) => idx === i ? data : o));
 
   const validate = () => {
     if (!selectedRoom) return 'Veuillez sélectionner une chambre.';
     if (!dates.check_in_date) return 'Veuillez saisir la date d\'arrivée.';
     if (dates.reservation_type === 'determined' && !dates.check_out_date) return 'Veuillez saisir la date de départ.';
-    const sameNameCount = allReservations.filter(r => {
-      if (reservation && r.id === reservation.id) return false;
-      return r.occupant_name?.toLowerCase() === form.occupant_name?.toLowerCase() && r.status !== 'canceled';
-    }).length;
-    if (sameNameCount >= 2) return 'Cette personne a déjà 2 réservations actives (max 2).';
+    if (!isEdit) {
+      for (const occ of occupants) {
+        if (!occ.occupant_name?.trim()) return 'Veuillez renseigner le nom de chaque occupant.';
+      }
+    } else {
+      if (!form.occupant_name?.trim()) return 'Veuillez renseigner le nom de l\'occupant.';
+    }
     return '';
   };
 
@@ -116,22 +191,38 @@ export default function ReservationForm({ reservation, rooms = [], allReservatio
     if (err) { setError(err); return; }
     setError('');
 
-    // Check if occupant already exists (by name, case-insensitive)
-    const existingOcc = existingOccupants.find(
-      o => o.full_name?.toLowerCase() === form.occupant_name?.toLowerCase()
-    );
-
-    onSubmit({
-      ...form,
-      room_id: selectedRoom.id,
-      room_number: selectedRoom.number,
-      building_name: selectedRoom.building_name || '',
-      site_name: selectedRoom.site_name || '',
-      check_in_date: dates.check_in_date,
-      check_out_date: dates.reservation_type === 'determined' ? dates.check_out_date : null,
-      _existingOccupant: existingOcc || null,
-      _selectedRoom: selectedRoom,
-    });
+    if (isEdit) {
+      onSubmit({
+        ...form,
+        room_id: selectedRoom.id,
+        room_number: selectedRoom.number,
+        building_name: selectedRoom.building_name || '',
+        site_name: selectedRoom.site_name || '',
+        check_in_date: dates.check_in_date,
+        check_out_date: dates.reservation_type === 'determined' ? dates.check_out_date : null,
+        _existingOccupant: existingOccupants.find(o => o.full_name?.toLowerCase() === form.occupant_name?.toLowerCase()) || null,
+        _selectedRoom: selectedRoom,
+      });
+    } else {
+      // Submit one entry per occupant
+      const reservationsToCreate = occupants.map(occ => ({
+        occupant_name: occ.occupant_name,
+        occupant_phone: occ.occupant_phone,
+        occupant_type: occ.occupant_type,
+        is_married_couple: occ.is_married_couple,
+        status,
+        notes,
+        room_id: selectedRoom.id,
+        room_number: selectedRoom.number,
+        building_name: selectedRoom.building_name || '',
+        site_name: selectedRoom.site_name || '',
+        check_in_date: dates.check_in_date,
+        check_out_date: dates.reservation_type === 'determined' ? dates.check_out_date : null,
+        _existingOccupant: existingOccupants.find(o => o.full_name?.toLowerCase() === occ.occupant_name?.toLowerCase()) || null,
+        _selectedRoom: selectedRoom,
+      }));
+      onSubmit(reservationsToCreate);
+    }
   };
 
   return (
@@ -287,90 +378,79 @@ export default function ReservationForm({ reservation, rooms = [], allReservatio
             )}
           </div>
 
-          {/* Occupant Details Section */}
-          <div className="space-y-3 p-4 rounded-xl bg-slate-800/40 border border-slate-700/40">
-            <div className="flex items-center justify-between">
+          {/* Occupants Section */}
+          {isEdit ? (
+            <div className="space-y-3 p-4 rounded-xl bg-slate-800/40 border border-slate-700/40">
               <div className="text-xs font-semibold text-slate-400 uppercase tracking-wider">Détails de l'occupant</div>
-              {!isEdit && existingOccupants.length > 0 && (
-                <span className="text-xs text-slate-500">{existingOccupants.length} occupant(s) existant(s)</span>
-              )}
-            </div>
-
-            {/* Search existing occupants */}
-            {!isEdit && (
-              <div className="relative">
-                <label className="text-xs font-semibold text-slate-300 uppercase tracking-wide block mb-1">Sélectionner un occupant existant</label>
-                <p className="text-xs text-slate-500 mb-1.5">Recherchez ou saisissez un nouveau nom ci-dessous</p>
-                <div className="relative">
-                  <UserSearch className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-500" />
-                  <input
-                    className="w-full pl-10 pr-9 py-2.5 rounded-md bg-black border border-slate-600 text-white text-sm placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-cyan-500/50 focus:border-cyan-500/60 transition-colors"
-                    placeholder="Rechercher par nom ou téléphone..."
-                    value={occupantSearch}
-                    onChange={e => { setOccupantSearch(e.target.value); setShowOccupantDropdown(true); }}
-                    onFocus={() => setShowOccupantDropdown(true)}
-                  />
-                  {occupantSearch && (
-                    <button type="button" onClick={clearSelectedOccupant} className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-500 hover:text-white">
-                      <X className="w-3.5 h-3.5" />
-                    </button>
-                  )}
-                </div>
-                {showOccupantDropdown && filteredOccupants.length > 0 && (
-                  <div className="absolute z-50 w-full mt-1 bg-[#0d1324] border border-slate-700 rounded-xl shadow-2xl overflow-hidden">
-                    {filteredOccupants.map(occ => (
-                      <button
-                        key={occ.id}
-                        type="button"
-                        onMouseDown={() => selectOccupant(occ)}
-                        className="w-full text-left px-4 py-2.5 hover:bg-slate-800/60 transition-colors flex items-center justify-between"
-                      >
-                        <div>
-                          <p className="text-sm text-white font-medium">{occ.full_name}</p>
-                          <p className="text-xs text-slate-500">{occ.phone || 'Pas de téléphone'} · {occ.room_number ? `Chambre ${occ.room_number}` : 'Sans chambre'}</p>
-                        </div>
-                        <span className="text-xs px-2 py-0.5 rounded-full bg-slate-700 text-slate-300 capitalize">{occ.gender}</span>
-                      </button>
-                    ))}
-                  </div>
-                )}
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <GlassInput label="Nom de l'occupant *" hint="Prénom et nom complet" value={form.occupant_name}
+                  onChange={e => setForm({ ...form, occupant_name: e.target.value })} required placeholder="ex: Kouamé Jean" />
+                <GlassInput label="Téléphone" hint="Numéro de téléphone de l'occupant" value={form.occupant_phone}
+                  onChange={e => setForm({ ...form, occupant_phone: e.target.value })} placeholder="ex: +225 07 00 00 00" />
               </div>
-            )}
-
-            {/* Name & Phone */}
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-              <GlassInput label="Nom de l'occupant *" hint="Prénom et nom complet" value={form.occupant_name}
-                onChange={e => { setForm({ ...form, occupant_name: e.target.value }); setShowOccupantDropdown(false); }} required placeholder="ex: Kouamé Jean" />
-              <GlassInput label="Téléphone" hint="Numéro de téléphone de l'occupant" value={form.occupant_phone}
-                onChange={e => setForm({ ...form, occupant_phone: e.target.value })} placeholder="ex: +225 07 00 00 00" />
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <GlassSelect label="Type d'occupant *" hint="Catégorie de l'occupant" value={form.occupant_type}
+                  onChange={e => setForm({ ...form, occupant_type: e.target.value })} options={OCCUPANT_TYPES} />
+                <GlassSelect label="Statut" hint="État de la réservation" value={form.status}
+                  onChange={e => setForm({ ...form, status: e.target.value })} options={[
+                    { value: 'pending', label: 'En attente' },
+                    { value: 'confirmed', label: 'Confirmée' },
+                    { value: 'canceled', label: 'Annulée' },
+                  ]} />
+              </div>
+              <label className="flex items-center gap-2 text-sm text-slate-300 cursor-pointer">
+                <input type="checkbox" checked={form.is_married_couple}
+                  onChange={e => setForm({ ...form, is_married_couple: e.target.checked })}
+                  className="w-4 h-4 rounded bg-slate-800 border-slate-600 text-cyan-500" />
+                💍 Couple marié
+              </label>
             </div>
+          ) : (
+            <div className="space-y-3">
+              <div className="flex items-center justify-between">
+                <div className="text-xs font-semibold text-slate-400 uppercase tracking-wider">
+                  Occupants <span className="text-cyan-400 ml-1">({occupants.length})</span>
+                </div>
+                <button type="button" onClick={addOccupant}
+                  className="flex items-center gap-1.5 text-xs text-cyan-400 hover:text-cyan-300 font-medium transition-colors">
+                  <Plus className="w-3.5 h-3.5" /> Ajouter un occupant
+                </button>
+              </div>
+              <div className="space-y-3 max-h-[400px] overflow-y-auto pr-1">
+                {occupants.map((occ, i) => (
+                  <OccupantRow key={i} occ={occ} index={i}
+                    onChange={(data) => updateOccupant(i, data)}
+                    onRemove={() => removeOccupant(i)}
+                    canRemove={occupants.length > 1}
+                    existingOccupants={existingOccupants}
+                  />
+                ))}
+              </div>
 
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-              <GlassSelect label="Type d'occupant *" hint="Catégorie de l'occupant" value={form.occupant_type}
-                onChange={e => setForm({ ...form, occupant_type: e.target.value })}
-                options={OCCUPANT_TYPES} />
-              <GlassSelect label="Statut" hint="État de la réservation" value={form.status}
-                onChange={e => setForm({ ...form, status: e.target.value })} options={[
+              {/* Shared status & notes */}
+              <div className="p-4 rounded-xl bg-slate-800/40 border border-slate-700/40 space-y-3">
+                <div className="text-xs font-semibold text-slate-400 uppercase tracking-wider">Paramètres communs</div>
+                <GlassSelect label="Statut" value={status} onChange={e => setStatus(e.target.value)} options={[
                   { value: 'pending', label: 'En attente' },
                   { value: 'confirmed', label: 'Confirmée' },
                   { value: 'canceled', label: 'Annulée' },
                 ]} />
+                <GlassTextarea label="Notes" hint="Informations supplémentaires (optionnel)" value={notes}
+                  onChange={e => setNotes(e.target.value)} placeholder="Observations ou instructions particulières..." />
+              </div>
             </div>
+          )}
 
-            <label className="flex items-center gap-2 text-sm text-slate-300 cursor-pointer">
-              <input type="checkbox" checked={form.is_married_couple}
-                onChange={e => setForm({ ...form, is_married_couple: e.target.checked })}
-                className="w-4 h-4 rounded bg-slate-800 border-slate-600 text-cyan-500" />
-              💍 Couple marié
-            </label>
-          </div>
-
-          <GlassTextarea label="Notes" hint="Informations supplémentaires (optionnel)" value={form.notes}
-            onChange={e => setForm({ ...form, notes: e.target.value })} placeholder="Observations ou instructions particulières..." />
+          {isEdit && (
+            <GlassTextarea label="Notes" hint="Informations supplémentaires (optionnel)" value={form.notes}
+              onChange={e => setForm({ ...form, notes: e.target.value })} placeholder="Observations ou instructions particulières..." />
+          )}
 
           <div className="flex justify-end gap-3 pt-2">
             <GlassButton variant="secondary" type="button" onClick={onCancel}>Annuler</GlassButton>
-            <GlassButton type="submit">{isEdit ? 'Mettre à jour' : 'Confirmer la réservation'}</GlassButton>
+            <GlassButton type="submit">
+              {isEdit ? 'Mettre à jour' : `Confirmer (${occupants.length} occupant${occupants.length > 1 ? 's' : ''})`}
+            </GlassButton>
           </div>
         </form>
       )}
