@@ -41,38 +41,44 @@ export default function Reservations() {
   const { data: rooms = [] } = useQuery({ queryKey: ['rooms'], queryFn: () => base44.entities.Room.list() });
   const { data: occupants = [] } = useQuery({ queryKey: ['occupants'], queryFn: () => base44.entities.Occupant.list() });
 
+  const createSingleReservation = async (data) => {
+    const { _existingOccupant, _selectedRoom, ...resData } = data;
+    const res = await base44.entities.Reservation.create(resData);
+    if (!_existingOccupant && resData.occupant_name?.trim()) {
+      await base44.entities.Occupant.create({
+        full_name: resData.occupant_name,
+        phone: resData.occupant_phone || '',
+        gender: resData.occupant_type === 'woman' ? 'female' : 'male',
+        room_id: resData.room_id,
+        room_number: resData.room_number,
+        building_name: resData.building_name,
+        site_name: resData.site_name,
+        check_in_date: resData.check_in_date,
+        check_out_date: resData.check_out_date || '',
+        status: 'active',
+      });
+    }
+    await base44.entities.HistoryEvent.create({
+      event_type: 'reservation', entity_type: 'reservation', entity_name: resData.occupant_name,
+      description: `Reservation for ${resData.occupant_name} in Room ${resData.room_number}`,
+      timestamp: new Date().toISOString(),
+    });
+    return res;
+  };
+
   const saveMut = useMutation({
     mutationFn: async (data) => {
-      // Extract internal fields before saving reservation
-      const { _existingOccupant, _selectedRoom, ...resData } = data;
-
-      if (modal.reservation) return base44.entities.Reservation.update(modal.reservation.id, resData);
-
-      const res = await base44.entities.Reservation.create(resData);
-
-      // Auto-create occupant if not already existing
-      if (!_existingOccupant && resData.occupant_name?.trim()) {
-        await base44.entities.Occupant.create({
-          full_name: resData.occupant_name,
-          phone: resData.occupant_phone || '',
-          gender: resData.occupant_type === 'woman' ? 'female' : 'male',
-          room_id: resData.room_id,
-          room_number: resData.room_number,
-          building_name: resData.building_name,
-          site_name: resData.site_name,
-          check_in_date: resData.check_in_date,
-          check_out_date: resData.check_out_date || '',
-          status: 'active',
-        });
-        qc.invalidateQueries({ queryKey: ['occupants'] });
+      // Edit: single object
+      if (modal.reservation) {
+        const { _existingOccupant, _selectedRoom, ...resData } = data;
+        return base44.entities.Reservation.update(modal.reservation.id, resData);
       }
-
-      await base44.entities.HistoryEvent.create({
-        event_type: 'reservation', entity_type: 'reservation', entity_name: resData.occupant_name,
-        description: `Reservation for ${resData.occupant_name} in Room ${resData.room_number}`,
-        timestamp: new Date().toISOString(),
-      });
-      return res;
+      // Create: array of occupants
+      const list = Array.isArray(data) ? data : [data];
+      for (const item of list) {
+        await createSingleReservation(item);
+      }
+      qc.invalidateQueries({ queryKey: ['occupants'] });
     },
     onSuccess: () => { qc.invalidateQueries({ queryKey: ['reservations'] }); setModal({ open: false, reservation: null }); },
   });
