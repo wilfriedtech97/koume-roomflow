@@ -68,6 +68,14 @@ export default function Reservations() {
     return res;
   };
 
+  const checkDuplicate = (occupantName) => {
+    if (!occupantName?.trim()) return null;
+    const name = occupantName.trim().toLowerCase();
+    return reservations.find(r =>
+      r.occupant_name?.toLowerCase() === name && r.status !== 'canceled'
+    ) || null;
+  };
+
   const saveMut = useMutation({
     mutationFn: async (data) => {
       // Edit: single object
@@ -75,14 +83,26 @@ export default function Reservations() {
         const { _existingOccupant, _selectedRoom, ...resData } = data;
         return base44.entities.Reservation.update(modal.reservation.id, resData);
       }
-      // Create: array of occupants
+      // Create: array of occupants — check for duplicates first
       const list = Array.isArray(data) ? data : [data];
+      const blocked = [];
+      for (const item of list) {
+        const existing = checkDuplicate(item.occupant_name);
+        if (existing) blocked.push({ item, existing });
+      }
+      if (blocked.length > 0) {
+        const names = blocked.map(b => b.item.occupant_name).join(', ');
+        toast.error(`Réservation refusée : ${names} a déjà une réservation active.`, { duration: 6000 });
+        setDuplicateRes(blocked[0].existing);
+        throw new Error('duplicate');
+      }
       for (const item of list) {
         await createSingleReservation(item);
       }
       qc.invalidateQueries({ queryKey: ['occupants'] });
     },
-    onSuccess: () => { qc.invalidateQueries({ queryKey: ['reservations'] }); setModal({ open: false, reservation: null }); },
+    onSuccess: () => { qc.invalidateQueries({ queryKey: ['reservations'] }); setModal({ open: false, reservation: null }); setDuplicateRes(null); },
+    onError: (err) => { if (err.message !== 'duplicate') throw err; },
   });
 
   const deleteMut = useMutation({
