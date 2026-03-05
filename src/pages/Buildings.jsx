@@ -13,21 +13,31 @@ import ExportButton from '../components/ui-custom/ExportButton';
 import BuildingForm from '../components/buildings/BuildingForm';
 
 export default function Buildings() {
+  // Modal state for create/edit building dialog
   const [modal, setModal] = useState({ open: false, building: null });
+
+  // Filter buildings by site
   const [siteFilter, setSiteFilter] = useState('');
+
   const qc = useQueryClient();
 
+  // Fetch buildings, sites, and rooms from the database
   const { data: buildings = [], isLoading } = useQuery({ queryKey: ['buildings'], queryFn: () => base44.entities.Building.list() });
   const { data: sites = [] } = useQuery({ queryKey: ['sites'], queryFn: () => base44.entities.Site.list() });
   const { data: rooms = [] } = useQuery({ queryKey: ['rooms'], queryFn: () => base44.entities.Room.list() });
 
+  // Mutation: create or update a building record
   const saveMut = useMutation({
     mutationFn: (data) => modal.building
       ? base44.entities.Building.update(modal.building.id, data)
       : base44.entities.Building.create(data),
-    onSuccess: () => { qc.invalidateQueries({ queryKey: ['buildings'] }); setModal({ open: false, building: null }); },
+    onSuccess: () => {
+      qc.invalidateQueries({ queryKey: ['buildings'] });
+      setModal({ open: false, building: null });
+    },
   });
 
+  // Mutation: delete a building by ID
   const deleteMut = useMutation({
     mutationFn: (id) => base44.entities.Building.delete(id),
     onSuccess: () => qc.invalidateQueries({ queryKey: ['buildings'] }),
@@ -35,21 +45,26 @@ export default function Buildings() {
 
   if (isLoading) return <LoadingSpinner />;
 
+  // Filter buildings by selected site (or show all if no filter)
   const filtered = siteFilter ? buildings.filter(b => b.site_id === siteFilter) : buildings;
 
   return (
     <div>
+      {/* Page title and export/add actions */}
       <PageHeader
         title="Buildings"
         subtitle={`${buildings.length} buildings`}
         action={
           <div className="flex gap-3">
             <ExportButton data={buildings} filename="buildings" />
-            <GlassButton onClick={() => setModal({ open: true, building: null })}><Plus className="w-4 h-4" /> Add Building</GlassButton>
+            <GlassButton onClick={() => setModal({ open: true, building: null })}>
+              <Plus className="w-4 h-4" /> Add Building
+            </GlassButton>
           </div>
         }
       />
 
+      {/* Site filter dropdown */}
       <div className="mb-6 max-w-xs">
         <GlassSelect
           value={siteFilter}
@@ -58,14 +73,17 @@ export default function Buildings() {
         />
       </div>
 
+      {/* Buildings grid or empty state */}
       {filtered.length === 0 ? (
         <EmptyState icon={Building2} title="No buildings" message="Add a building to get started." />
       ) : (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
           {filtered.map(b => {
+            // Count rooms belonging to this building
             const rCount = rooms.filter(r => r.building_id === b.id).length;
             return (
               <div key={b.id} className="entity-card p-5 group">
+                {/* Card header: icon, name, site name, status badge */}
                 <div className="flex items-start justify-between mb-3">
                   <div className="flex items-center gap-3">
                     <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-amber-500/20 to-orange-500/20 flex items-center justify-center">
@@ -78,6 +96,8 @@ export default function Buildings() {
                   </div>
                   <StatusBadge status={b.status} />
                 </div>
+
+                {/* Floor count and room count */}
                 <div className="flex gap-4 mb-4">
                   <div className="flex items-center gap-1.5 text-xs text-slate-400">
                     <Layers className="w-3.5 h-3.5" /> {b.floors || 0} floors
@@ -86,9 +106,19 @@ export default function Buildings() {
                     <DoorOpen className="w-3.5 h-3.5" /> {rCount} rooms
                   </div>
                 </div>
+
+                {/* Edit and delete actions — visible on hover */}
                 <div className="flex gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
-                  <GlassButton variant="ghost" className="text-xs" onClick={() => setModal({ open: true, building: b })}><Pencil className="w-3 h-3" /> Edit</GlassButton>
-                  <GlassButton variant="ghost" className="text-xs text-rose-400" onClick={() => { if (confirm('Delete this building?')) deleteMut.mutate(b.id); }}><Trash2 className="w-3 h-3" /> Delete</GlassButton>
+                  <GlassButton variant="ghost" className="text-xs" onClick={() => setModal({ open: true, building: b })}>
+                    <Pencil className="w-3 h-3" /> Edit
+                  </GlassButton>
+                  <GlassButton
+                    variant="ghost"
+                    className="text-xs text-rose-400"
+                    onClick={() => { if (confirm('Delete this building?')) deleteMut.mutate(b.id); }}
+                  >
+                    <Trash2 className="w-3 h-3" /> Delete
+                  </GlassButton>
                 </div>
               </div>
             );
@@ -96,8 +126,18 @@ export default function Buildings() {
         </div>
       )}
 
-      <GlassModal open={modal.open} onClose={() => setModal({ open: false, building: null })} title={modal.building ? 'Edit Building' : 'New Building'}>
-        <BuildingForm building={modal.building} sites={sites} onSubmit={(d) => saveMut.mutate(d)} onCancel={() => setModal({ open: false, building: null })} />
+      {/* Create / Edit building modal */}
+      <GlassModal
+        open={modal.open}
+        onClose={() => setModal({ open: false, building: null })}
+        title={modal.building ? 'Edit Building' : 'New Building'}
+      >
+        <BuildingForm
+          building={modal.building}
+          sites={sites}
+          onSubmit={d => saveMut.mutate(d)}
+          onCancel={() => setModal({ open: false, building: null })}
+        />
       </GlassModal>
     </div>
   );

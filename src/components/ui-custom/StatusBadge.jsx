@@ -1,5 +1,6 @@
 import React from 'react';
 
+// Color mapping per status value
 const statusStyles = {
   active: 'bg-emerald-500/15 text-emerald-400 border-emerald-500/30',
   inactive: 'bg-slate-500/15 text-slate-400 border-slate-500/30',
@@ -13,10 +14,13 @@ const statusStyles = {
   checked_out: 'bg-slate-500/15 text-slate-400 border-slate-500/30',
 };
 
+// Displays a color-coded pill badge for a given status string
 export default function StatusBadge({ status }) {
+  // Fall back to 'inactive' style for unknown statuses
   const style = statusStyles[status] || statusStyles.inactive;
   return (
     <span className={`inline-flex px-2.5 py-0.5 rounded-full text-xs font-medium border ${style}`}>
+      {/* Replace underscores with spaces for readability */}
       {(status || '').replace(/_/g, ' ')}
     </span>
   );

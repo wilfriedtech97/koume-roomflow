@@ -11,14 +11,21 @@ import LoadingSpinner from '../components/ui-custom/LoadingSpinner';
 import DatabaseManager from '../components/admin/DatabaseManager';
 
 export default function Admin() {
+  // Current authenticated user profile
   const [user, setUser] = useState(null);
+
+  // User invitation form state
   const [inviteEmail, setInviteEmail] = useState('');
   const [inviteRole, setInviteRole] = useState('user');
   const [inviting, setInviting] = useState(false);
   const [inviteMsg, setInviteMsg] = useState('');
 
-  useEffect(() => { base44.auth.me().then(setUser).catch(() => {}); }, []);
+  // Load the current user's profile on mount
+  useEffect(() => {
+    base44.auth.me().then(setUser).catch(() => {});
+  }, []);
 
+  // Fetch data needed for KPI stat cards
   const { data: rooms = [], isLoading: rl } = useQuery({ queryKey: ['rooms'], queryFn: () => base44.entities.Room.list() });
   const { data: occupants = [] } = useQuery({ queryKey: ['occupants'], queryFn: () => base44.entities.Occupant.list() });
   const { data: buildings = [] } = useQuery({ queryKey: ['buildings'], queryFn: () => base44.entities.Building.list() });
@@ -26,10 +33,12 @@ export default function Admin() {
 
   if (rl) return <LoadingSpinner />;
 
+  // --- KPI Calculations ---
   const activeOccupants = occupants.filter(o => o.status === 'active').length;
   const totalBeds = rooms.reduce((s, r) => s + (r.bed_count || 0), 0);
   const occupancyRate = totalBeds > 0 ? Math.round((activeOccupants / totalBeds) * 100) : 0;
 
+  // Send an invitation email to a new user with the specified role
   const handleInvite = async () => {
     if (!inviteEmail) return;
     setInviting(true);
@@ -46,9 +55,10 @@ export default function Admin() {
 
   return (
     <div>
+      {/* Page title */}
       <PageHeader title="Admin" subtitle="System overview and management" />
 
-      {/* Stats */}
+      {/* KPI stat cards */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
         <StatCard3D title="Active Occupants" value={activeOccupants} icon={Users} gradient="from-cyan-500 to-blue-600" />
         <StatCard3D title="Total Rooms" value={rooms.length} icon={DoorOpen} gradient="from-emerald-500 to-green-600" delay={0.05} />
@@ -57,9 +67,11 @@ export default function Admin() {
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
-        {/* Profile */}
+        {/* Current user profile display */}
         <div className="entity-card p-6">
-          <h3 className="text-lg font-semibold text-white mb-4 flex items-center gap-2"><Shield className="w-5 h-5 text-cyan-400" /> My Profile</h3>
+          <h3 className="text-lg font-semibold text-white mb-4 flex items-center gap-2">
+            <Shield className="w-5 h-5 text-cyan-400" /> My Profile
+          </h3>
           <div className="space-y-3 text-sm">
             <div className="flex justify-between py-2 border-b border-slate-800/50">
               <span className="text-slate-400">Name</span>
@@ -76,25 +88,41 @@ export default function Admin() {
           </div>
         </div>
 
-        {/* Invite User */}
+        {/* User invitation form */}
         <div className="entity-card p-6">
-          <h3 className="text-lg font-semibold text-white mb-4 flex items-center gap-2"><UserPlus className="w-5 h-5 text-cyan-400" /> Invite User</h3>
+          <h3 className="text-lg font-semibold text-white mb-4 flex items-center gap-2">
+            <UserPlus className="w-5 h-5 text-cyan-400" /> Invite User
+          </h3>
           <div className="space-y-4">
-            <GlassInput label="Email Address" type="email" value={inviteEmail} onChange={e => setInviteEmail(e.target.value)} placeholder="user@example.com" />
-            <GlassSelect label="Role" value={inviteRole} onChange={e => setInviteRole(e.target.value)} options={[
-              { value: 'user', label: 'User (Full access)' },
-              { value: 'visitor', label: 'Visitor (Limited access)' },
-              { value: 'admin', label: 'Admin (Full + management)' },
-            ]} />
+            <GlassInput
+              label="Email Address"
+              type="email"
+              value={inviteEmail}
+              onChange={e => setInviteEmail(e.target.value)}
+              placeholder="user@example.com"
+            />
+            <GlassSelect
+              label="Role"
+              value={inviteRole}
+              onChange={e => setInviteRole(e.target.value)}
+              options={[
+                { value: 'user', label: 'User (Full access)' },
+                { value: 'visitor', label: 'Visitor (Limited access)' },
+                { value: 'admin', label: 'Admin (Full + management)' },
+              ]}
+            />
+            {/* Send invitation button — disabled when already sending or email is empty */}
             <GlassButton onClick={handleInvite} disabled={inviting || !inviteEmail}>
-              {inviting ? <Loader2 className="w-4 h-4 animate-spin" /> : <UserPlus className="w-4 h-4" />} Send Invitation
+              {inviting ? <Loader2 className="w-4 h-4 animate-spin" /> : <UserPlus className="w-4 h-4" />}
+              Send Invitation
             </GlassButton>
+            {/* Invitation feedback message */}
             {inviteMsg && <p className="text-sm text-cyan-400">{inviteMsg}</p>}
           </div>
         </div>
       </div>
 
-      {/* Database Manager */}
+      {/* Database export/import/restore tool */}
       <DatabaseManager />
     </div>
   );
