@@ -18,6 +18,7 @@ import moment from 'moment';
 
 export default function Reservations() {
   const [modal, setModal] = useState({ open: false, reservation: null });
+  const [duplicateRes, setDuplicateRes] = useState(null);
   const [search, setSearch] = useState('');
   const [statusFilter, setStatusFilter] = useState('');
   const [typeFilter, setTypeFilter] = useState('');
