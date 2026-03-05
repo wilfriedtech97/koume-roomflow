@@ -191,6 +191,24 @@ export default function Reservations() {
         </div>
       </div>
 
+      {/* Duplicate reservation warning */}
+      {duplicateRes && (
+        <div className="mb-5 p-4 rounded-xl bg-amber-500/10 border border-amber-500/40 flex items-start gap-3">
+          <AlertTriangle className="w-5 h-5 text-amber-400 shrink-0 mt-0.5" />
+          <div className="flex-1">
+            <p className="text-sm font-semibold text-amber-300 mb-1">Réservation existante détectée</p>
+            <p className="text-xs text-amber-200/70 mb-2">Cet occupant a déjà une réservation active :</p>
+            <div className="p-3 rounded-lg bg-amber-500/10 border border-amber-500/20 text-xs text-white space-y-1">
+              <p><span className="text-amber-400 font-medium">👤</span> {duplicateRes.occupant_name} <span className="text-slate-400 capitalize">({duplicateRes.occupant_type})</span></p>
+              <p><span className="text-amber-400 font-medium">🏠</span> Chambre {duplicateRes.room_number || '—'} • {duplicateRes.building_name || '—'} • {duplicateRes.site_name || '—'}</p>
+              <p><span className="text-amber-400 font-medium">📅</span> {duplicateRes.check_in_date ? moment(duplicateRes.check_in_date).format('DD MMM YYYY') : '—'} → {duplicateRes.check_out_date ? moment(duplicateRes.check_out_date).format('DD MMM YYYY') : '—'}</p>
+              <p><span className="text-amber-400 font-medium">📌</span> Statut : <span className="capitalize">{duplicateRes.status}</span></p>
+            </div>
+          </div>
+          <button onClick={() => setDuplicateRes(null)} className="text-slate-500 hover:text-white mt-0.5"><X className="w-4 h-4" /></button>
+        </div>
+      )}
+
       {filtered.length === 0 ? (
         <EmptyState icon={CalendarCheck} title="No reservations" message="Create a reservation or adjust filters." />
       ) : (
