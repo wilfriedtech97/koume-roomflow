@@ -158,6 +158,16 @@ export default function ReservationForm({
   onSubmit,
   onCancel,
 }) {
+  // Pre-compute active reservation count per room for occupancy display
+  const roomOccupancyMap = useMemo(() => {
+    const map = {};
+    allReservations.forEach(r => {
+      if (r.room_id && r.status !== 'canceled') {
+        map[r.room_id] = (map[r.room_id] || 0) + 1;
+      }
+    });
+    return map;
+  }, [allReservations]);
   const isEdit = !!reservation;
 
   // Step 1: filtering criteria
