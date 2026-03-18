@@ -129,7 +129,22 @@ export default function Reservations() {
       // CREATE MODE: single reservation object (multi-occupant stored in notes)
       const item = Array.isArray(data) ? data[0] : data;
 
-      // Check if the primary occupant already has an active reservation
+      // ── CAPACITY CHECK ──
+      // Count active (non-canceled) reservations already made for this room
+      if (item.room_id) {
+        const room = rooms.find(r => r.id === item.room_id) || item._selectedRoom;
+        const capacity = room ? (room.capacity || room.bed_count || 1) : 1;
+        const activeForRoom = reservations.filter(
+          r => r.room_id === item.room_id && r.status !== 'canceled'
+        ).length;
+        if (activeForRoom >= capacity) {
+          // Show room-full popup and abort
+          setRoomFullModal({ open: true, room, currentCount: activeForRoom });
+          throw new Error('room_full');
+        }
+      }
+
+      // ── DUPLICATE CHECK ──
       const existing = checkDuplicate(item.occupant_name);
       if (existing) {
         toast.error(`Réservation refusée : ${item.occupant_name} a déjà une réservation active.`, { duration: 6000 });
@@ -138,20 +153,28 @@ export default function Reservations() {
       }
 
       // Create the single reservation record
-      await createSingleReservation(item);
+      const created = await createSingleReservation(item);
 
       // Refresh occupants list to reflect newly created profile
       qc.invalidateQueries({ queryKey: ['occupants'] });
+
+      // Return the created reservation data for the success modal
+      return { ...item, id: created?.id };
     },
-    onSuccess: () => {
-      // Refresh reservations list and close modal on success
+    onSuccess: (createdData) => {
+      // Refresh reservations list and close form modal
       qc.invalidateQueries({ queryKey: ['reservations'] });
       setModal({ open: false, reservation: null });
       setDuplicateRes(null);
+      // Show success result popup
+      setResultModal({ open: true, success: true, reservation: createdData, errorMessage: '' });
     },
     onError: (err) => {
-      // Suppress the 'duplicate' error since it's already handled with a toast
-      if (err.message !== 'duplicate') throw err;
+      // room_full and duplicate are already handled with their own popups — suppress re-throw
+      if (err.message === 'room_full' || err.message === 'duplicate') return;
+      // Any other unexpected error → show failure popup
+      setModal({ open: false, reservation: null });
+      setResultModal({ open: true, success: false, reservation: null, errorMessage: err.message || 'Une erreur inattendue est survenue.' });
     },
   });
 
