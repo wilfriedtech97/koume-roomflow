@@ -12,6 +12,8 @@ import EmptyState from '../components/ui-custom/EmptyState';
 import LoadingSpinner from '../components/ui-custom/LoadingSpinner';
 import ExportButton from '../components/ui-custom/ExportButton';
 import ReservationForm from '../components/reservations/ReservationForm';
+import RoomFullModal from '../components/reservations/RoomFullModal';
+import ReservationResultModal from '../components/reservations/ReservationResultModal';
 import { Calendar as CalendarPicker } from '@/components/ui/calendar';
 import moment from 'moment';
 
