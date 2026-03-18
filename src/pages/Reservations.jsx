@@ -386,6 +386,23 @@ export default function Reservations() {
           onCancel={() => setModal({ open: false, reservation: null })}
         />
       </GlassModal>
+
+      {/* Room-full popup — shown when a room has reached its maximum reservation capacity */}
+      <RoomFullModal
+        open={roomFullModal.open}
+        room={roomFullModal.room}
+        currentCount={roomFullModal.currentCount}
+        onClose={() => setRoomFullModal({ open: false, room: null, currentCount: 0 })}
+      />
+
+      {/* Result popup — shown after every reservation attempt (success or failure) */}
+      <ReservationResultModal
+        open={resultModal.open}
+        success={resultModal.success}
+        reservation={resultModal.reservation}
+        errorMessage={resultModal.errorMessage}
+        onClose={() => setResultModal({ open: false, success: false, reservation: null, errorMessage: '' })}
+      />
     </div>
   );
 }
