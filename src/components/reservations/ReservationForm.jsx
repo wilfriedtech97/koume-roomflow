@@ -416,6 +416,29 @@ export default function ReservationForm({
                       </div>
                     </div>
                     <div className="text-xs text-slate-500 mb-2">{room.building_name} · {room.site_name}</div>
+                    {/* Occupancy progress bar */}
+                    {(() => {
+                      const cap = room.capacity || room.bed_count || 1;
+                      const used = roomOccupancyMap[room.id] || 0;
+                      const pct = Math.min(100, Math.round((used / cap) * 100));
+                      const isFull = used >= cap;
+                      return (
+                        <div className="mb-2">
+                          <div className="flex justify-between text-xs mb-1">
+                            <span className={isFull ? 'text-rose-400' : 'text-slate-500'}>
+                              {isFull ? '🔴 Complet' : `${used}/${cap} réservations`}
+                            </span>
+                            <span className={isFull ? 'text-rose-400 font-semibold' : 'text-slate-500'}>{pct}%</span>
+                          </div>
+                          <div className="w-full h-1.5 rounded-full bg-slate-700">
+                            <div
+                              className={`h-1.5 rounded-full transition-all ${isFull ? 'bg-rose-500' : pct > 70 ? 'bg-amber-500' : 'bg-emerald-500'}`}
+                              style={{ width: `${pct}%` }}
+                            />
+                          </div>
+                        </div>
+                      );
+                    })()}
                     <div className="flex flex-wrap gap-3">
                       <FacilityIcon has={room.hot_water} Icon={Droplets} label="Eau chaude" />
                       <FacilityIcon has={room.internal_shower} Icon={ShowerHead} label="Douche" />
