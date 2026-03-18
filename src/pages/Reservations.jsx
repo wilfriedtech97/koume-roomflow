@@ -24,6 +24,12 @@ export default function Reservations() {
   // Holds the conflicting reservation when a duplicate occupant is detected
   const [duplicateRes, setDuplicateRes] = useState(null);
 
+  // Room-full modal state: shows when the selected room has reached capacity
+  const [roomFullModal, setRoomFullModal] = useState({ open: false, room: null, currentCount: 0 });
+
+  // Result modal state: shown after every reservation attempt (success or failure)
+  const [resultModal, setResultModal] = useState({ open: false, success: false, reservation: null, errorMessage: '' });
+
   // Filter states for the reservation list
   const [search, setSearch] = useState('');
   const [statusFilter, setStatusFilter] = useState('');
