@@ -118,28 +118,21 @@ export default function Reservations() {
         return base44.entities.Reservation.update(modal.reservation.id, resData);
       }
 
-      // CREATE MODE: ensure no occupant has a duplicate active reservation
-      const list = Array.isArray(data) ? data : [data];
-      const blocked = [];
-      for (const item of list) {
-        const existing = checkDuplicate(item.occupant_name);
-        if (existing) blocked.push({ item, existing });
-      }
+      // CREATE MODE: single reservation object (multi-occupant stored in notes)
+      const item = Array.isArray(data) ? data[0] : data;
 
-      // Block creation and show warning if duplicates are found
-      if (blocked.length > 0) {
-        const names = blocked.map(b => b.item.occupant_name).join(', ');
-        toast.error(`Réservation refusée : ${names} a déjà une réservation active.`, { duration: 6000 });
-        setDuplicateRes(blocked[0].existing);
+      // Check if the primary occupant already has an active reservation
+      const existing = checkDuplicate(item.occupant_name);
+      if (existing) {
+        toast.error(`Réservation refusée : ${item.occupant_name} a déjà une réservation active.`, { duration: 6000 });
+        setDuplicateRes(existing);
         throw new Error('duplicate');
       }
 
-      // Create a reservation for each occupant in the list
-      for (const item of list) {
-        await createSingleReservation(item);
-      }
+      // Create the single reservation record
+      await createSingleReservation(item);
 
-      // Refresh occupants list to reflect newly created profiles
+      // Refresh occupants list to reflect newly created profile
       qc.invalidateQueries({ queryKey: ['occupants'] });
     },
     onSuccess: () => {
