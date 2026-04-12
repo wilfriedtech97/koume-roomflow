@@ -14,6 +14,7 @@ import ExportButton from '../components/ui-custom/ExportButton';
 import ReservationForm from '../components/reservations/ReservationForm';
 import RoomFullModal from '../components/reservations/RoomFullModal';
 import ReservationResultModal from '../components/reservations/ReservationResultModal';
+import ReservationDetailModal from '../components/reservations/ReservationDetailModal';
 import { Calendar as CalendarPicker } from '@/components/ui/calendar';
 import moment from 'moment';
 
@@ -22,6 +23,7 @@ export default function Reservations() {
   const [duplicateRes, setDuplicateRes] = useState(null);
   const [roomFullModal, setRoomFullModal] = useState({ open: false, room: null, currentCount: 0 });
   const [resultModal, setResultModal] = useState({ open: false, success: false, reservation: null, allReservations: [], errorMessage: '' });
+  const [detailModal, setDetailModal] = useState({ open: false, reservation: null });
   const [search, setSearch] = useState('');
   const [statusFilter, setStatusFilter] = useState('');
   const [typeFilter, setTypeFilter] = useState('');
@@ -346,6 +348,9 @@ export default function Reservations() {
 
                 {/* Actions */}
                 <div className="flex gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
+                  <GlassButton variant="ghost" className="text-xs" onClick={() => setDetailModal({ open: true, reservation: res })}>
+                    👁 Voir
+                  </GlassButton>
                   <GlassButton variant="ghost" className="text-xs" onClick={() => setModal({ open: true, reservation: res })}>
                     <Pencil className="w-3 h-3" /> Modifier
                   </GlassButton>
@@ -393,6 +398,14 @@ export default function Reservations() {
         allReservations={resultModal.allReservations || []}
         errorMessage={resultModal.errorMessage}
         onClose={() => setResultModal({ open: false, success: false, reservation: null, allReservations: [], errorMessage: '' })}
+      />
+
+      {/* Detail popup */}
+      <ReservationDetailModal
+        open={detailModal.open}
+        reservation={detailModal.reservation}
+        room={detailModal.reservation ? rooms.find(r => r.id === detailModal.reservation.room_id) : null}
+        onClose={() => setDetailModal({ open: false, reservation: null })}
       />
     </div>
   );

@@ -241,7 +241,7 @@ export default function ReservationForm({
   // Rooms in construction (informational)
   const constructionRooms = useMemo(() => rooms.filter(r => r.status === 'construction'), [rooms]);
 
-  const addOccupant = () => setOccupants(prev => [...prev, emptyOccupant()]);
+  const addOccupant = () => setOccupants(prev => [emptyOccupant(), ...prev]);
   const removeOccupant = (i) => setOccupants(prev => prev.filter((_, idx) => idx !== i));
   const updateOccupant = (i, data) => setOccupants(prev => prev.map((o, idx) => idx === i ? data : o));
 
