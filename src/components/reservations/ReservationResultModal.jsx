@@ -1,11 +1,11 @@
 import React from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { CheckCircle2, XCircle, X, CalendarCheck, DoorOpen, User } from 'lucide-react';
+import { CheckCircle2, XCircle, X, CalendarCheck, DoorOpen, User, Phone } from 'lucide-react';
 import GlassButton from '../ui-custom/GlassButton';
 import moment from 'moment';
 
 // Modal shown after a reservation attempt — success or failure
-export default function ReservationResultModal({ open, success, reservation, errorMessage, onClose }) {
+export default function ReservationResultModal({ open, success, reservation, allReservations = [], errorMessage, onClose }) {
   if (!open) return null;
 
   return (
@@ -55,37 +55,35 @@ export default function ReservationResultModal({ open, success, reservation, err
           </div>
 
           {/* Reservation summary (success only) */}
-          {success && reservation && (
-            <div className="rounded-xl bg-slate-800/50 border border-slate-700/50 p-4 space-y-2.5 mb-5">
-              <div className="flex items-center gap-2 text-sm">
-                <User className="w-4 h-4 text-cyan-400 shrink-0" />
-                <span className="text-white font-medium">{reservation.occupant_name}</span>
-                <span className="text-slate-500 capitalize text-xs">({reservation.occupant_type})</span>
-              </div>
-              <div className="flex items-center gap-2 text-sm">
+          {success && (allReservations.length > 0 || reservation) && (
+            <div className="rounded-xl bg-slate-800/50 border border-slate-700/50 p-4 space-y-3 mb-5 max-h-60 overflow-y-auto">
+              {/* Room header */}
+              <div className="flex items-center gap-2 pb-2 border-b border-slate-700/50">
                 <DoorOpen className="w-4 h-4 text-cyan-400 shrink-0" />
-                <span className="text-slate-300">Chambre {reservation.room_number}</span>
-                <span className="text-slate-500 text-xs">· {reservation.building_name}</span>
+                <span className="text-white font-bold">Chambre {(allReservations[0] || reservation)?.room_number}</span>
+                <span className="text-slate-500 text-xs">· {(allReservations[0] || reservation)?.building_name}</span>
               </div>
-              <div className="flex items-center gap-2 text-sm">
-                <CalendarCheck className="w-4 h-4 text-cyan-400 shrink-0" />
-                <span className="text-slate-300">
-                  {reservation.check_in_date ? moment(reservation.check_in_date).format('DD MMM YYYY') : '—'}
-                  {reservation.check_out_date
-                    ? ` → ${moment(reservation.check_out_date).format('DD MMM YYYY')}`
-                    : ' (indéterminée)'}
-                </span>
-              </div>
-              {/* Status badge */}
-              <div className="pt-1">
-                <span className={`inline-flex px-2.5 py-0.5 rounded-full text-xs font-medium border ${
-                  reservation.status === 'confirmed'
-                    ? 'bg-cyan-500/15 text-cyan-400 border-cyan-500/30'
-                    : 'bg-amber-500/15 text-amber-400 border-amber-500/30'
-                }`}>
-                  {reservation.status === 'confirmed' ? 'Confirmée' : reservation.status === 'pending' ? 'En attente' : reservation.status}
-                </span>
-              </div>
+              {/* One row per occupant */}
+              {(allReservations.length > 0 ? allReservations : [reservation]).map((r, i) => (
+                <div key={i} className="space-y-1">
+                  <div className="flex items-center gap-2 text-sm">
+                    <User className="w-3.5 h-3.5 text-cyan-400 shrink-0" />
+                    <span className="text-white font-medium">{r.occupant_name}</span>
+                    <span className="text-slate-500 capitalize text-xs">({r.occupant_type})</span>
+                    {r.is_married_couple && <span className="text-xs">💍</span>}
+                  </div>
+                  {r.occupant_phone && (
+                    <div className="flex items-center gap-2 text-xs text-slate-400 ml-5">
+                      <Phone className="w-3 h-3" />{r.occupant_phone}
+                    </div>
+                  )}
+                  <div className="flex items-center gap-2 text-xs text-slate-400 ml-5">
+                    <CalendarCheck className="w-3 h-3" />
+                    {r.check_in_date ? moment(r.check_in_date).format('DD MMM YYYY') : '—'}
+                    {r.check_out_date ? ` → ${moment(r.check_out_date).format('DD MMM YYYY')}` : ' (indéterminée)'}
+                  </div>
+                </div>
+              ))}
             </div>
           )}
 

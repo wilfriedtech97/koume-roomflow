@@ -96,6 +96,7 @@ export default function Rooms() {
             { value: 'available', label: 'Available' },
             { value: 'occupied', label: 'Occupied' },
             { value: 'unavailable', label: 'Unavailable' },
+            { value: 'construction', label: '🏗️ Construction' },
           ]}
         />
         <GlassSelect

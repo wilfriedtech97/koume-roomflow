@@ -88,6 +88,7 @@ export default function RoomForm({ room, sites = [], buildings = [], onSubmit, o
             <option value="available" className="bg-black text-white">Disponible</option>
             <option value="occupied" className="bg-black text-white">Occupée</option>
             <option value="unavailable" className="bg-black text-white">Indisponible</option>
+            <option value="construction" className="bg-black text-white">🏗️ En construction</option>
           </select>
           <p className="text-xs text-slate-500 mt-0.5">Disponibilité actuelle</p>
         </div>

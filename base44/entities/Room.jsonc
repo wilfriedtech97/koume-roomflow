@@ -1,0 +1,85 @@
+{
+  "name": "Room",
+  "type": "object",
+  "properties": {
+    "number": {
+      "type": "string",
+      "description": "Room number"
+    },
+    "building_id": {
+      "type": "string",
+      "description": "Associated building ID"
+    },
+    "building_name": {
+      "type": "string",
+      "description": "Associated building name"
+    },
+    "site_id": {
+      "type": "string",
+      "description": "Associated site ID"
+    },
+    "site_name": {
+      "type": "string",
+      "description": "Associated site name"
+    },
+    "genre": {
+      "type": "string",
+      "enum": [
+        "standard",
+        "vip",
+        "couple",
+        "prayer",
+        "family"
+      ],
+      "default": "standard"
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "available",
+        "occupied",
+        "unavailable",
+        "construction"
+      ],
+      "default": "available",
+      "description": "available=open for reservations, occupied=full, unavailable=temporarily closed, construction=under construction (excluded from search)"
+    },
+    "capacity": {
+      "type": "number",
+      "default": 1,
+      "description": "Number of people the room can accommodate"
+    },
+    "hot_water": {
+      "type": "boolean",
+      "default": false
+    },
+    "internal_shower": {
+      "type": "boolean",
+      "default": false
+    },
+    "bathroom": {
+      "type": "boolean",
+      "default": false
+    },
+    "fan": {
+      "type": "boolean",
+      "default": false
+    },
+    "lighting": {
+      "type": "boolean",
+      "default": false
+    },
+    "internet": {
+      "type": "boolean",
+      "default": false
+    },
+    "current_occupants": {
+      "type": "number",
+      "default": 0
+    }
+  },
+  "required": [
+    "number",
+    "building_id"
+  ]
+}
