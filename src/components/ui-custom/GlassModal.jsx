@@ -12,13 +12,12 @@ export default function GlassModal({ open, onClose, title, children, maxWidth = 
     <AnimatePresence>
       {/* Full-screen overlay container */}
       <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
-        {/* Blurred dark backdrop — clicking it closes the modal */}
+        {/* Blurred dark backdrop */}
         <motion.div
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           exit={{ opacity: 0 }}
           className="absolute inset-0 bg-black/60 backdrop-blur-sm"
-          onClick={onClose}
         />
         {/* Modal content panel with spring entrance animation */}
         <motion.div
