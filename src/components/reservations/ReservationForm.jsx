@@ -241,7 +241,7 @@ export default function ReservationForm({
   // Rooms in construction (informational)
   const constructionRooms = useMemo(() => rooms.filter(r => r.status === 'construction'), [rooms]);
 
-  const addOccupant = () => setOccupants(prev => [...prev, emptyOccupant()]);
+  const addOccupant = () => setOccupants(prev => [emptyOccupant(), ...prev]);
   const removeOccupant = (i) => setOccupants(prev => prev.filter((_, idx) => idx !== i));
   const updateOccupant = (i, data) => setOccupants(prev => prev.map((o, idx) => idx === i ? data : o));
 
@@ -482,7 +482,7 @@ export default function ReservationForm({
             </div>
             <div className="space-y-3 max-h-[400px] overflow-y-auto pr-1">
               {occupants.map((occ, i) => (
-                <OccupantRow key={i} occ={occ} index={i}
+                <OccupantRow key={i} occ={occ} index={occupants.length - 1 - i}
                   onChange={data => updateOccupant(i, data)}
                   onRemove={() => removeOccupant(i)}
                   canRemove={occupants.length > 1}
