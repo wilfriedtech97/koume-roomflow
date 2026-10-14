@@ -8,6 +8,7 @@ export const FR = {
   // ── Navigation / layout ──────────────────────────────────────
   'Navigation': 'Navigation',
   'Tools': 'Outils',
+  'Language': 'Langue',
   'Dashboard': 'Tableau de bord',
   'Sites': 'Sites',
   'Buildings': 'Bâtiments',

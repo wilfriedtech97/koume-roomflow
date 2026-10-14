@@ -4,7 +4,7 @@ import { createPageUrl } from '@/utils';
 import { base44 } from '@/api/base44Client';
 import {
   LayoutDashboard, MapPin, Building2, DoorOpen, Users, CalendarCheck,
-  Clock, Shield, Menu, ChevronRight, LogOut
+  Clock, Shield, Menu, ChevronRight, LogOut, Globe
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import SyncStatus from '@/components/ui-custom/SyncStatus';
@@ -129,6 +129,13 @@ export default function Layout({ children, currentPageName }) {
         </nav>
 
         <div className="p-4 border-t border-hair">
+          <div className="flex items-center justify-between mb-3">
+            <div className="flex items-center gap-2 px-3">
+              <Globe className="w-4 h-4 text-inkmuted" />
+              <span className="text-xs font-semibold text-inkmuted uppercase tracking-widest">{t('Language')}</span>
+            </div>
+            <LanguageToggle />
+          </div>
           <div className="flex items-center gap-3 mb-3">
             <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-navy to-gold flex items-center justify-center text-xs font-bold text-white">
               {(user?.full_name || 'U')[0].toUpperCase()}
