@@ -4,12 +4,27 @@ module.exports = {
     content: ["./index.html", "./src/**/*.{ts,tsx,js,jsx}"],
   theme: {
   	extend: {
+  		fontFamily: {
+  			sans: ['"Public Sans"', 'Inter', 'system-ui', 'sans-serif'],
+  			display: ['"Playfair Display"', 'Georgia', 'serif']
+  		},
   		borderRadius: {
   			lg: 'var(--radius)',
   			md: 'calc(var(--radius) - 2px)',
   			sm: 'calc(var(--radius) - 4px)'
   		},
   		colors: {
+  			app: 'var(--app-bg)',
+  			surface: {
+  				DEFAULT: 'rgb(var(--c-surface) / <alpha-value>)'
+  			},
+  			surface2: 'rgb(var(--c-surface2) / <alpha-value>)',
+  			hair: 'rgb(var(--c-hair) / <alpha-value>)',
+  			ink: 'rgb(var(--c-ink) / <alpha-value>)',
+  			inksoft: 'rgb(var(--c-inksoft) / <alpha-value>)',
+  			inkmuted: 'rgb(var(--c-inkmuted) / <alpha-value>)',
+  			gold: 'rgb(var(--c-gold) / <alpha-value>)',
+  			navy: 'rgb(var(--c-navy) / <alpha-value>)',
   			background: 'hsl(var(--background))',
   			foreground: 'hsl(var(--foreground))',
   			card: {
