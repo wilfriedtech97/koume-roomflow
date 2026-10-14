@@ -1,5 +1,5 @@
 const KEY = 'koume-theme';
-let current = 'dark';
+let current = 'light';
 const listeners = new Set();
 
 function apply() {
@@ -13,7 +13,7 @@ function apply() {
 export function initTheme() {
   let stored = null;
   try { stored = localStorage.getItem(KEY); } catch (e) { /* noop */ }
-  current = stored === 'light' ? 'light' : 'dark';
+  current = stored === 'dark' ? 'dark' : 'light';
   apply();
   listeners.forEach((fn) => fn(current));
 }
@@ -23,7 +23,7 @@ export function getTheme() {
 }
 
 export function setTheme(theme) {
-  current = theme === 'light' ? 'light' : 'dark';
+  current = theme === 'dark' ? 'dark' : 'light';
   try { localStorage.setItem(KEY, current); } catch (e) { /* noop */ }
   apply();
   listeners.forEach((fn) => fn(current));
