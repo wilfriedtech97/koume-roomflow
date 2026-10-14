@@ -7,16 +7,49 @@
 export const FR = {
   // ── Navigation / layout ──────────────────────────────────────
   'Navigation': 'Navigation',
+  // ── Landing page ─────────────────────────────────────────────
+  'Complete dormitory management platform': 'Plateforme complète de gestion de dortoirs',
+  'Manage your sites, buildings, rooms, occupants and reservations with precision — a single, formal and reliable system designed for administrators who expect institutional-grade control.':
+    'Gérez vos sites, bâtiments, chambres, occupants et réservations avec précision — un système unique, formel et fiable, conçu pour les administrateurs exigeant un contrôle de niveau institutionnel.',
+  'Sign in to get started': 'Connectez-vous pour commencer',
+  'Go to Dashboard': 'Aller au tableau de bord',
+  'Institutional design': 'Design institutionnel',
+  'Day & night modes': 'Modes jour et nuit',
+  'French & English': 'Français et anglais',
+  'Works offline': 'Fonctionne hors ligne',
+  'Everything you need, in one system': 'Tout ce qu’il faut, dans un seul système',
+  'Six integrated modules that cover the full lifecycle of your dormitories.':
+    'Six modules intégrés couvrant tout le cycle de vie de vos dortoirs.',
+  'Sites Management': 'Gestion des sites',
+  'Manage multiple dormitory sites, each with its own buildings, rooms and teams, from a single console.':
+    'Gérez plusieurs sites de dortoirs, chacun avec ses bâtiments, chambres et équipes, depuis une console unique.',
+  'Buildings & Floors': 'Bâtiments et étages',
+  'Organize every site into buildings and floors with clear structure and operational status tracking.':
+    'Organisez chaque site en bâtiments et étages, avec une structure claire et le suivi de l’état opérationnel.',
+  'Smart Rooms': 'Chambres intelligentes',
+  'Track capacity, room types, facilities and live availability — including rooms under construction.':
+    'Suivez la capacité, les types de chambres, les équipements et la disponibilité en temps réel — y compris les chambres en construction.',
+  'Occupants': 'Occupants',
+  'Full occupant records with gender, contact details, ID documents and personalized stay dates.':
+    'Fiches complètes des occupants : sexe, coordonnées, pièces d’identité et dates de séjour personnalisées.',
+  'Reservations': 'Réservations',
+  'A guided three-step reservation wizard with capacity checks and staggered arrival dates.':
+    'Un assistant de réservation en trois étapes avec contrôle de capacité et dates d’arrivée échelonnées.',
+  'History & Audit': 'Historique et audit',
+  'Every check-in, check-out and change is logged, giving you a complete audit trail.':
+    'Chaque arrivée, départ et modification est enregistré, pour une piste d’audit complète.',
+  'Built to keep working, even offline': 'Conçu pour continuer à fonctionner, même hors ligne',
+  'Koume RoomFlow stores your data locally and syncs automatically when the connection returns — perfect for dormitories with unreliable internet.':
+    'Koume RoomFlow stocke vos données localement et se synchronise automatiquement au retour de la connexion — idéal pour les dortoirs avec un internet instable.',
   'Tools': 'Outils',
   'Language': 'Langue',
   'Dashboard': 'Tableau de bord',
   'Sites': 'Sites',
   'Buildings': 'Bâtiments',
   'Rooms': 'Chambres',
-  'Occupants': 'Occupants',
-  'Reservations': 'Réservations',
   'History': 'Historique',
   'Admin': 'Admin',
+
   'Management System': 'Système de Gestion',
   'Sign Out': 'Déconnexion',
   'User': 'Utilisateur',
