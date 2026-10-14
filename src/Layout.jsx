@@ -4,7 +4,7 @@ import { createPageUrl } from '@/utils';
 import { base44 } from '@/api/base44Client';
 import {
   LayoutDashboard, MapPin, Building2, DoorOpen, Users, CalendarCheck,
-  Clock, Shield, Menu, ChevronRight, LogOut, Globe
+  Clock, Shield, Menu, ChevronRight, LogOut, Globe, MonitorDown
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import SyncStatus from '@/components/ui-custom/SyncStatus';
@@ -30,6 +30,7 @@ const navSections = [
       { name: 'History', icon: Clock, page: 'History' },
 
       { name: 'Admin', icon: Shield, page: 'Admin' },
+      { name: 'Desktop App', icon: MonitorDown, page: 'Admin', query: '?section=desktop-app' },
     ],
   },
 ];
@@ -86,7 +87,7 @@ export default function Layout({ children, currentPageName }) {
                   return (
                     <Link
                       key={item.page}
-                      to={createPageUrl(item.page)}
+                      to={item.query ? `${createPageUrl(item.page)}${item.query}` : createPageUrl(item.page)}
                       onClick={() => setSidebarOpen(false)}
                       className={`flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium transition-all ${
                         isActive

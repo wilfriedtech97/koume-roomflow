@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { useLocation } from 'react-router-dom';
 import { MonitorDown, CheckCircle2, Circle, Monitor, Apple, Globe, Info } from 'lucide-react';
 import GlassButton from '../ui-custom/GlassButton';
 import { useT } from '@/lib/i18n';
@@ -21,6 +22,9 @@ const isStandalone = () =>
 
 export default function DesktopAppCard() {
   const t = useT();
+  const location = useLocation();
+  const elRef = React.useRef(null);
+  const [highlighted, setHighlighted] = useState(false);
   const [installed, setInstalled] = useState(isStandalone());
   const [canPrompt, setCanPrompt] = useState(!!deferredPrompt);
   const [swReady, setSwReady] = useState(false);
@@ -33,6 +37,16 @@ export default function DesktopAppCard() {
     const onInstalled = () => { setInstalled(true); setCanPrompt(false); deferredPrompt = null; };
     window.addEventListener('appinstalled', onInstalled);
 
+    // Highlight and scroll to the card when opened from the menu entry
+    const urlParams = new URLSearchParams(window.location.search);
+    if (urlParams.get('section') === 'desktop-app') {
+      setTimeout(() => {
+        elRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        setHighlighted(true);
+        setTimeout(() => setHighlighted(false), 3000);
+      }, 300);
+    }
+
     // Confirm the offline service worker is active (app opens without internet).
     if ('serviceWorker' in navigator) {
       navigator.serviceWorker.getRegistration().then((reg) => {
@@ -40,7 +54,7 @@ export default function DesktopAppCard() {
       }).catch(() => {});
     }
     return () => { earlyListeners.delete(onEarly); window.removeEventListener('appinstalled', onInstalled); };
-  }, []);
+  }, [location.search]);
 
   // Trigger the browser's native "Install app" dialog.
   const handleInstall = async () => {
@@ -71,7 +85,7 @@ export default function DesktopAppCard() {
   })();
 
   return (
-    <div className="entity-card p-6 mb-8">
+    <div ref={elRef} className={`entity-card p-6 mb-8 transition-shadow duration-500 ${highlighted ? 'ring-2 ring-cyan-400/60' : ''}`}>
       <h3 className="text-lg font-semibold text-white mb-1 flex items-center gap-2">
         <MonitorDown className="w-5 h-5 text-cyan-400" /> {t('Desktop App')}
       </h3>
