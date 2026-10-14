@@ -9,6 +9,7 @@ import GlassSelect from '../components/ui-custom/GlassSelect';
 import GlassButton from '../components/ui-custom/GlassButton';
 import LoadingSpinner from '../components/ui-custom/LoadingSpinner';
 import DatabaseManager from '../components/admin/DatabaseManager';
+import DesktopAppCard from '../components/admin/DesktopAppCard';
 import { useT } from '@/lib/i18n';
 
 export default function Admin() {
@@ -123,6 +124,9 @@ export default function Admin() {
           </div>
         </div>
       </div>
+
+      {/* Downloadable local desktop app (PWA) */}
+      <DesktopAppCard />
 
       {/* Database export/import/restore tool */}
       <DatabaseManager />

@@ -5,8 +5,8 @@
   "start_url": "/",
   "scope": "/",
   "display": "standalone",
-  "background_color": "#0a1120",
-  "theme_color": "#0a1120",
+  "background_color": "#f4f5f7",
+  "theme_color": "#f4f5f7",
   "icons": [
     {
       "src": "https://qtrypzzcjebvfcihiynt.supabase.co/storage/v1/object/public/base44-prod/public/69a0277e13e69f944f28e4fd/c8fdfebab_OIP.jpg",

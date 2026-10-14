@@ -435,4 +435,25 @@ export const FR = {
   'Verify you are logged in with the correct account': 'Vérifier que vous êtes connecté avec le bon compte',
   'Contact the app administrator for access': "Contacter l'administrateur pour obtenir l'accès",
   'Try logging out and back in again': 'Essayer de vous déconnecter puis vous reconnecter',
+  // ── Desktop app (Admin) ──────────────────────────────────────
+  'Desktop App': 'Application de bureau',
+  'Install Koume RoomFlow as a local desktop application. It opens in its own window, works offline, and syncs when you are back online.':
+    "Installez Koume RoomFlow comme application de bureau locale. Elle s'ouvre dans sa propre fenêtre, fonctionne hors ligne et se synchronise au retour de la connexion.",
+  'App installed': 'Application installée',
+  'Not installed': 'Non installée',
+  'Offline mode ready': 'Mode hors ligne prêt',
+  'Offline mode pending (reconnect once to activate)': "Mode hors ligne en attente (reconnectez-vous une fois pour l'activer)",
+  'Install Desktop App': "Installer l'application de bureau",
+  'Koume RoomFlow is installed on this device.': "Koume RoomFlow est installée sur cet appareil.",
+  'Manual installation steps': "Étapes d'installation manuelle",
+  'Chrome or Edge: open the published app URL, then click the install icon in the address bar — or the browser menu, then "Install Koume RoomFlow".':
+    "Chrome ou Edge : ouvrez l'URL publiée de l'application, puis cliquez sur l'icône d'installation dans la barre d'adresse — ou le menu du navigateur, puis « Installer Koume RoomFlow ».",
+  'Edge: browser menu, then "Apps", then "Install this site as an app".':
+    "Edge : menu du navigateur, puis « Applications », puis « Installer ce site comme application ».",
+  'Safari on Mac: open the app, then the Share menu, then "Add to Dock".':
+    "Safari sur Mac : ouvrez l'application, puis le menu Partager, puis « Ajouter au Dock ».",
+  'Tip: Firefox does not support desktop installation — use Chrome, Edge or Safari.':
+    "Astuce : Firefox ne prend pas en charge l'installation sur ordinateur — utilisez Chrome, Edge ou Safari.",
+  'Use your browser menu to install the app (see steps below).':
+    "Utilisez le menu de votre navigateur pour installer l'application (voir les étapes ci-dessous).",
 };
