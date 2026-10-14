@@ -1,8 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import { useLocation } from 'react-router-dom';
-import { MonitorDown, CheckCircle2, Circle, Monitor, Apple, Globe, Info } from 'lucide-react';
+import { MonitorDown, CheckCircle2, Circle, Globe, Info } from 'lucide-react';
 import GlassButton from '../ui-custom/GlassButton';
 import { useT } from '@/lib/i18n';
+import { detectPlatform, buildInstaller } from '@/lib/installerFiles';
 
 // Capture the native install prompt as early as possible, even if it
 // fires before this card is mounted.
@@ -26,15 +27,14 @@ export default function DesktopAppCard() {
   const elRef = React.useRef(null);
   const [highlighted, setHighlighted] = useState(false);
   const [installed, setInstalled] = useState(isStandalone());
-  const [canPrompt, setCanPrompt] = useState(!!deferredPrompt);
   const [swReady, setSwReady] = useState(false);
   const [installing, setInstalling] = useState(false);
+  const [downloaded, setDownloaded] = useState(false);
   const [promptError, setPromptError] = useState('');
+  const platform = React.useMemo(() => detectPlatform(), []);
 
   useEffect(() => {
-    const onEarly = () => setCanPrompt(true);
-    earlyListeners.add(onEarly);
-    const onInstalled = () => { setInstalled(true); setCanPrompt(false); deferredPrompt = null; };
+    const onInstalled = () => { setInstalled(true); deferredPrompt = null; };
     window.addEventListener('appinstalled', onInstalled);
 
     // Highlight and scroll to the card when opened from the menu entry
@@ -53,36 +53,50 @@ export default function DesktopAppCard() {
         if (reg && (reg.active || reg.installing || reg.waiting)) setSwReady(true);
       }).catch(() => {});
     }
-    return () => { earlyListeners.delete(onEarly); window.removeEventListener('appinstalled', onInstalled); };
+    return () => window.removeEventListener('appinstalled', onInstalled);
   }, [location.search]);
 
-  // Trigger the browser's native "Install app" dialog.
+  // One click: native install dialog when the browser offers it,
+  // otherwise instantly download a launcher file that opens the app
+  // in its own window and creates a desktop icon.
   const handleInstall = async () => {
     setPromptError('');
+    setDownloaded(false);
     const promptEvent = deferredPrompt;
-    if (!promptEvent) { setPromptError(t('Use your browser menu to install the app (see steps below).')); return; }
+    if (!promptEvent) { startDownload(); return; }
     setInstalling(true);
     try {
       promptEvent.prompt();
       const { outcome } = await promptEvent.userChoice;
       if (outcome === 'accepted') setInstalled(true);
       deferredPrompt = null;
-      setCanPrompt(false);
     } catch (e) {
-      setPromptError(t('Use your browser menu to install the app (see steps below).'));
+      startDownload();
     }
     setInstalling(false);
   };
 
-  const browser = (() => {
-    if (typeof navigator === 'undefined') return 'chrome';
-    const ua = navigator.userAgent;
-    if (/Edg\//.test(ua)) return 'edge';
-    if (/Chrome\//.test(ua) && !/Edg\//.test(ua)) return 'chrome';
-    if (/Firefox\//.test(ua)) return 'firefox';
-    if (/Safari\//.test(ua) && !/Chrome\//.test(ua)) return 'safari';
-    return 'chrome';
-  })();
+  const startDownload = () => {
+    try {
+      const installer = buildInstaller(platform);
+      if (!installer) {
+        setPromptError(t('On mobile, use your browser menu and choose "Add to Home Screen".'));
+        return;
+      }
+      const blob = new Blob([installer.content], { type: installer.mime });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = installer.filename;
+      document.body.appendChild(a);
+      a.click();
+      a.remove();
+      setTimeout(() => URL.revokeObjectURL(url), 5000);
+      setDownloaded(true);
+    } catch (e) {
+      setPromptError(t('Download failed. Use your browser menu to install the app.'));
+    }
+  };
 
   return (
     <div ref={elRef} className={`entity-card p-6 mb-8 transition-shadow duration-500 ${highlighted ? 'ring-2 ring-cyan-400/60' : ''}`}>
@@ -105,12 +119,20 @@ export default function DesktopAppCard() {
         </span>
       </div>
 
-      {/* Primary install action */}
+      {/* Primary install action: one click */}
       {!installed && (
-        <div className="mb-5">
+        <div className="mb-4">
           <GlassButton onClick={handleInstall} disabled={installing}>
-            <MonitorDown className="w-4 h-4" /> {t('Install Desktop App')}
+            <MonitorDown className="w-4 h-4" /> {t('Download & Install')}
           </GlassButton>
+          {downloaded && (
+            <p className="text-sm text-emerald-400 mt-3 flex items-start gap-2">
+              <CheckCircle2 className="w-4 h-4 mt-0.5 shrink-0" />
+              {platform === 'mac'
+                ? t('Installer downloaded. Open it to launch the app in its own window (if your Mac blocks it, right-click the file and choose Open).')
+                : t('Installer downloaded. Open it to launch the app in its own window and create a desktop icon.')}
+            </p>
+          )}
           {promptError && <p className="text-sm text-rose-400 mt-3">{promptError}</p>}
         </div>
       )}
@@ -121,32 +143,12 @@ export default function DesktopAppCard() {
         </div>
       )}
 
-      {/* Manual install steps per browser */}
-      {!installed && (
-        <div className="mt-2 border-t border-slate-800/50 pt-4">
-          <p className="text-xs font-semibold text-slate-400 uppercase tracking-widest mb-3 flex items-center gap-2">
-            <Info className="w-3.5 h-3.5" /> {t('Manual installation steps')}
-          </p>
-          <ul className="space-y-3 text-sm text-slate-300">
-            <li className="flex items-start gap-3">
-              <Globe className="w-4 h-4 text-cyan-400 mt-0.5 shrink-0" />
-              <span>{t('Chrome or Edge: open the published app URL, then click the install icon in the address bar — or the browser menu, then "Install Koume RoomFlow".')}</span>
-            </li>
-            <li className="flex items-start gap-3">
-              <Monitor className="w-4 h-4 text-cyan-400 mt-0.5 shrink-0" />
-              <span>{t('Edge: browser menu, then "Apps", then "Install this site as an app".')}</span>
-            </li>
-            <li className="flex items-start gap-3">
-              <Apple className="w-4 h-4 text-cyan-400 mt-0.5 shrink-0" />
-              <span>{t('Safari on Mac: open the app, then the Share menu, then "Add to Dock".')}</span>
-            </li>
-          </ul>
-          {browser === 'firefox' && (
-            <p className="text-sm text-slate-400 mt-3">
-              {t('Tip: Firefox does not support desktop installation — use Chrome, Edge or Safari.')}
-            </p>
-          )}
-        </div>
+      {/* Single Safari note (only remaining browser without a launcher file) */}
+      {platform === 'mac' && !installed && (
+        <p className="text-xs text-slate-400 mt-3 flex items-center gap-2">
+          <Globe className="w-3.5 h-3.5" />
+          {t('Safari on Mac: open the app, then the Share menu, then "Add to Dock".')}
+        </p>
       )}
     </div>
   );

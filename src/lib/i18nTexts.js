@@ -444,6 +444,15 @@ export const FR = {
   'Offline mode ready': 'Mode hors ligne prêt',
   'Offline mode pending (reconnect once to activate)': "Mode hors ligne en attente (reconnectez-vous une fois pour l'activer)",
   'Install Desktop App': "Installer l'application de bureau",
+  'Download & Install': 'Télécharger et installer',
+  'Installer downloaded. Open it to launch the app in its own window and create a desktop icon.':
+    "Installateur téléchargé. Ouvrez-le pour lancer l'application dans sa propre fenêtre et créer une icône sur le bureau.",
+  'Installer downloaded. Open it to launch the app in its own window (if your Mac blocks it, right-click the file and choose Open).':
+    "Installateur téléchargé. Ouvrez-le pour lancer l'application dans sa propre fenêtre (si votre Mac le bloque, faites un clic droit sur le fichier et choisissez Ouvrir).",
+  'On mobile, use your browser menu and choose "Add to Home Screen".':
+    "Sur mobile, utilisez le menu du navigateur et choisissez « Ajouter à l'écran d'accueil ».",
+  'Download failed. Use your browser menu to install the app.':
+    "Le téléchargement a échoué. Utilisez le menu du navigateur pour installer l'application.",
   'Koume RoomFlow is installed on this device.': "Koume RoomFlow est installée sur cet appareil.",
   'Manual installation steps': "Étapes d'installation manuelle",
   'Chrome or Edge: open the published app URL, then click the install icon in the address bar — or the browser menu, then "Install Koume RoomFlow".':
