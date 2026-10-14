@@ -9,8 +9,10 @@ import GlassSelect from '../components/ui-custom/GlassSelect';
 import GlassButton from '../components/ui-custom/GlassButton';
 import LoadingSpinner from '../components/ui-custom/LoadingSpinner';
 import DatabaseManager from '../components/admin/DatabaseManager';
+import { useT } from '@/lib/i18n';
 
 export default function Admin() {
+  const t = useT();
   // Current authenticated user profile
   const [user, setUser] = useState(null);
 
@@ -45,10 +47,10 @@ export default function Admin() {
     setInviteMsg('');
     try {
       await base44.users.inviteUser(inviteEmail, inviteRole);
-      setInviteMsg(`Invitation sent to ${inviteEmail} as ${inviteRole}.`);
+      setInviteMsg(t('Invitation sent to {email} as {role}.', { email: inviteEmail, role: inviteRole }));
       setInviteEmail('');
     } catch (e) {
-      setInviteMsg(`Error: ${e.message || 'Failed to invite.'}`);
+      setInviteMsg(t('Error: {msg}', { msg: e.message || t('Failed to invite.') }));
     }
     setInviting(false);
   };
@@ -56,33 +58,33 @@ export default function Admin() {
   return (
     <div>
       {/* Page title */}
-      <PageHeader title="Admin" subtitle="System overview and management" />
+      <PageHeader title={t('Admin')} subtitle={t('System overview and management')} />
 
       {/* KPI stat cards */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
-        <StatCard3D title="Active Occupants" value={activeOccupants} icon={Users} gradient="from-cyan-500 to-blue-600" />
-        <StatCard3D title="Total Rooms" value={rooms.length} icon={DoorOpen} gradient="from-emerald-500 to-green-600" delay={0.05} />
-        <StatCard3D title="Buildings" value={buildings.length} icon={Building2} gradient="from-amber-500 to-orange-600" delay={0.1} />
-        <StatCard3D title="Occupancy Rate" value={`${occupancyRate}%`} icon={TrendingUp} gradient="from-rose-500 to-pink-600" delay={0.15} />
+        <StatCard3D title={t('Active Occupants')} value={activeOccupants} icon={Users} gradient="from-cyan-500 to-blue-600" />
+        <StatCard3D title={t('Total Rooms')} value={rooms.length} icon={DoorOpen} gradient="from-emerald-500 to-green-600" delay={0.05} />
+        <StatCard3D title={t('Buildings')} value={buildings.length} icon={Building2} gradient="from-amber-500 to-orange-600" delay={0.1} />
+        <StatCard3D title={t('Occupancy Rate')} value={`${occupancyRate}%`} icon={TrendingUp} gradient="from-rose-500 to-pink-600" delay={0.15} />
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
         {/* Current user profile display */}
         <div className="entity-card p-6">
           <h3 className="text-lg font-semibold text-white mb-4 flex items-center gap-2">
-            <Shield className="w-5 h-5 text-cyan-400" /> My Profile
+            <Shield className="w-5 h-5 text-cyan-400" /> {t('My Profile')}
           </h3>
           <div className="space-y-3 text-sm">
             <div className="flex justify-between py-2 border-b border-slate-800/50">
-              <span className="text-slate-400">Name</span>
+              <span className="text-slate-400">{t('Name')}</span>
               <span className="text-white">{user?.full_name || '—'}</span>
             </div>
             <div className="flex justify-between py-2 border-b border-slate-800/50">
-              <span className="text-slate-400">Email</span>
+              <span className="text-slate-400">{t('Email')}</span>
               <span className="text-white">{user?.email || '—'}</span>
             </div>
             <div className="flex justify-between py-2">
-              <span className="text-slate-400">Role</span>
+              <span className="text-slate-400">{t('Role')}</span>
               <span className="text-cyan-400 capitalize">{user?.role || '—'}</span>
             </div>
           </div>
@@ -91,30 +93,30 @@ export default function Admin() {
         {/* User invitation form */}
         <div className="entity-card p-6">
           <h3 className="text-lg font-semibold text-white mb-4 flex items-center gap-2">
-            <UserPlus className="w-5 h-5 text-cyan-400" /> Invite User
+            <UserPlus className="w-5 h-5 text-cyan-400" /> {t('Invite User')}
           </h3>
           <div className="space-y-4">
             <GlassInput
-              label="Email Address"
+              label={t('Email Address')}
               type="email"
               value={inviteEmail}
               onChange={e => setInviteEmail(e.target.value)}
               placeholder="user@example.com"
             />
             <GlassSelect
-              label="Role"
+              label={t('Role')}
               value={inviteRole}
               onChange={e => setInviteRole(e.target.value)}
               options={[
-                { value: 'user', label: 'User (Full access)' },
-                { value: 'visitor', label: 'Visitor (Limited access)' },
-                { value: 'admin', label: 'Admin (Full + management)' },
+                { value: 'user', label: t('User (Full access)') },
+                { value: 'visitor', label: t('Visitor (Limited access)') },
+                { value: 'admin', label: t('Admin (Full + management)') },
               ]}
             />
             {/* Send invitation button — disabled when already sending or email is empty */}
             <GlassButton onClick={handleInvite} disabled={inviting || !inviteEmail}>
               {inviting ? <Loader2 className="w-4 h-4 animate-spin" /> : <UserPlus className="w-4 h-4" />}
-              Send Invitation
+              {t('Send Invitation')}
             </GlassButton>
             {/* Invitation feedback message */}
             {inviteMsg && <p className="text-sm text-cyan-400">{inviteMsg}</p>}

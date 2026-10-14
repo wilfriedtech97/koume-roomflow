@@ -10,8 +10,10 @@ import EmptyState from '../components/ui-custom/EmptyState';
 import LoadingSpinner from '../components/ui-custom/LoadingSpinner';
 import ExportButton from '../components/ui-custom/ExportButton';
 import SiteForm from '../components/sites/SiteForm';
+import { useT } from '@/lib/i18n';
 
 export default function Sites() {
+  const t = useT();
   // Modal state for create/edit site dialog
   const [modal, setModal] = useState({ open: false, site: null });
 
@@ -45,13 +47,13 @@ export default function Sites() {
     <div>
       {/* Page title and export/add actions */}
       <PageHeader
-        title="Sites"
-        subtitle={`${sites.length} sites registered`}
+        title={t('Sites')}
+        subtitle={t('{n} sites registered', { n: sites.length })}
         action={
           <div className="flex gap-3">
             <ExportButton data={sites} filename="sites" />
             <GlassButton onClick={() => setModal({ open: true, site: null })}>
-              <Plus className="w-4 h-4" /> Add Site
+              <Plus className="w-4 h-4" /> {t('Add Site')}
             </GlassButton>
           </div>
         }
@@ -59,7 +61,7 @@ export default function Sites() {
 
       {/* Sites grid or empty state */}
       {sites.length === 0 ? (
-        <EmptyState icon={MapPin} title="No sites" message="Create your first site to get started." />
+        <EmptyState icon={MapPin} title={t('No sites')} message={t('Create your first site to get started.')} />
       ) : (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
           {sites.map(site => {
@@ -76,7 +78,7 @@ export default function Sites() {
                     </div>
                     <div>
                       <h3 className="font-semibold text-white">{site.name}</h3>
-                      <p className="text-xs text-slate-500">{site.city || 'No city'}</p>
+                      <p className="text-xs text-slate-500">{site.city || t('No city')}</p>
                     </div>
                   </div>
                   <StatusBadge status={site.status} />
@@ -88,24 +90,24 @@ export default function Sites() {
                 {/* Building and room counts */}
                 <div className="flex gap-4 mb-4">
                   <div className="flex items-center gap-1.5 text-xs text-slate-400">
-                    <Building2 className="w-3.5 h-3.5" /> {bCount} buildings
+                    <Building2 className="w-3.5 h-3.5" /> {t('{n} buildings', { n: bCount })}
                   </div>
                   <div className="flex items-center gap-1.5 text-xs text-slate-400">
-                    <DoorOpen className="w-3.5 h-3.5" /> {rCount} rooms
+                    <DoorOpen className="w-3.5 h-3.5" /> {t('{n} rooms', { n: rCount })}
                   </div>
                 </div>
 
                 {/* Edit and delete actions — visible on hover */}
                 <div className="flex gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
                   <GlassButton variant="ghost" className="text-xs" onClick={() => setModal({ open: true, site })}>
-                    <Pencil className="w-3 h-3" /> Edit
+                    <Pencil className="w-3 h-3" /> {t('Edit')}
                   </GlassButton>
                   <GlassButton
                     variant="ghost"
                     className="text-xs text-rose-400"
-                    onClick={() => { if (confirm('Delete this site?')) deleteMut.mutate(site.id); }}
+                    onClick={() => { if (confirm(t('Delete this site?'))) deleteMut.mutate(site.id); }}
                   >
-                    <Trash2 className="w-3 h-3" /> Delete
+                    <Trash2 className="w-3 h-3" /> {t('Delete')}
                   </GlassButton>
                 </div>
               </div>
@@ -118,7 +120,7 @@ export default function Sites() {
       <GlassModal
         open={modal.open}
         onClose={() => setModal({ open: false, site: null })}
-        title={modal.site ? 'Edit Site' : 'New Site'}
+        title={modal.site ? t('Edit Site') : t('New Site')}
       >
         <SiteForm
           site={modal.site}

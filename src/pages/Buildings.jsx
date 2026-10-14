@@ -11,8 +11,10 @@ import EmptyState from '../components/ui-custom/EmptyState';
 import LoadingSpinner from '../components/ui-custom/LoadingSpinner';
 import ExportButton from '../components/ui-custom/ExportButton';
 import BuildingForm from '../components/buildings/BuildingForm';
+import { useT } from '@/lib/i18n';
 
 export default function Buildings() {
+  const t = useT();
   // Modal state for create/edit building dialog
   const [modal, setModal] = useState({ open: false, building: null });
 
@@ -52,13 +54,13 @@ export default function Buildings() {
     <div>
       {/* Page title and export/add actions */}
       <PageHeader
-        title="Buildings"
-        subtitle={`${buildings.length} buildings`}
+        title={t('Buildings')}
+        subtitle={t('{n} buildings', { n: buildings.length })}
         action={
           <div className="flex gap-3">
             <ExportButton data={buildings} filename="buildings" />
             <GlassButton onClick={() => setModal({ open: true, building: null })}>
-              <Plus className="w-4 h-4" /> Add Building
+              <Plus className="w-4 h-4" /> {t('Add Building')}
             </GlassButton>
           </div>
         }
@@ -69,13 +71,13 @@ export default function Buildings() {
         <GlassSelect
           value={siteFilter}
           onChange={e => setSiteFilter(e.target.value)}
-          options={[{ value: '', label: 'All Sites' }, ...sites.map(s => ({ value: s.id, label: s.name }))]}
+          options={[{ value: '', label: t('All Sites') }, ...sites.map(s => ({ value: s.id, label: s.name }))]}
         />
       </div>
 
       {/* Buildings grid or empty state */}
       {filtered.length === 0 ? (
-        <EmptyState icon={Building2} title="No buildings" message="Add a building to get started." />
+        <EmptyState icon={Building2} title={t('No buildings')} message={t('Add a building to get started.')} />
       ) : (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
           {filtered.map(b => {
@@ -91,7 +93,7 @@ export default function Buildings() {
                     </div>
                     <div>
                       <h3 className="font-semibold text-white">{b.name}</h3>
-                      <p className="text-xs text-slate-500">{b.site_name || 'No site'}</p>
+                      <p className="text-xs text-slate-500">{b.site_name || t('No site')}</p>
                     </div>
                   </div>
                   <StatusBadge status={b.status} />
@@ -100,24 +102,24 @@ export default function Buildings() {
                 {/* Floor count and room count */}
                 <div className="flex gap-4 mb-4">
                   <div className="flex items-center gap-1.5 text-xs text-slate-400">
-                    <Layers className="w-3.5 h-3.5" /> {b.floors || 0} floors
+                    <Layers className="w-3.5 h-3.5" /> {t('{n} floors', { n: b.floors || 0 })}
                   </div>
                   <div className="flex items-center gap-1.5 text-xs text-slate-400">
-                    <DoorOpen className="w-3.5 h-3.5" /> {rCount} rooms
+                    <DoorOpen className="w-3.5 h-3.5" /> {t('{n} rooms', { n: rCount })}
                   </div>
                 </div>
 
                 {/* Edit and delete actions — visible on hover */}
                 <div className="flex gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
                   <GlassButton variant="ghost" className="text-xs" onClick={() => setModal({ open: true, building: b })}>
-                    <Pencil className="w-3 h-3" /> Edit
+                    <Pencil className="w-3 h-3" /> {t('Edit')}
                   </GlassButton>
                   <GlassButton
                     variant="ghost"
                     className="text-xs text-rose-400"
-                    onClick={() => { if (confirm('Delete this building?')) deleteMut.mutate(b.id); }}
+                    onClick={() => { if (confirm(t('Delete this building?'))) deleteMut.mutate(b.id); }}
                   >
-                    <Trash2 className="w-3 h-3" /> Delete
+                    <Trash2 className="w-3 h-3" /> {t('Delete')}
                   </GlassButton>
                 </div>
               </div>
@@ -130,7 +132,7 @@ export default function Buildings() {
       <GlassModal
         open={modal.open}
         onClose={() => setModal({ open: false, building: null })}
-        title={modal.building ? 'Edit Building' : 'New Building'}
+        title={modal.building ? t('Edit Building') : t('New Building')}
       >
         <BuildingForm
           building={modal.building}

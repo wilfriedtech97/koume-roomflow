@@ -3,8 +3,10 @@ import GlassInput from '../ui-custom/GlassInput';
 import GlassTextarea from '../ui-custom/GlassTextarea';
 import GlassSelect from '../ui-custom/GlassSelect';
 import GlassButton from '../ui-custom/GlassButton';
+import { useT } from '@/lib/i18n';
 
 export default function OccupantForm({ occupant, rooms = [], buildings = [], sites = [], onSubmit, onCancel }) {
+  const t = useT();
   // Initialize form state from existing occupant (edit) or empty values (create)
   const [form, setForm] = useState({
     full_name: occupant?.full_name || '',
@@ -25,13 +27,13 @@ export default function OccupantForm({ occupant, rooms = [], buildings = [], sit
 
     // Prevent adding to a room that is not available (only on creation, not editing)
     if (room && room.status !== 'available' && !occupant) {
-      alert('This room is not available.');
+      alert(t('This room is not available.'));
       return;
     }
 
     // Prevent adding to a room that is at full capacity (only on creation)
     if (room && room.current_occupants >= (room.capacity || room.bed_count || 1) && !occupant) {
-      alert('This room is at full capacity.');
+      alert(t('This room is at full capacity.'));
       return;
     }
 
@@ -54,26 +56,26 @@ export default function OccupantForm({ occupant, rooms = [], buildings = [], sit
     <form onSubmit={handleSubmit} className="space-y-4">
       {/* Full name — required */}
       <GlassInput
-        label="Full Name *"
-        hint="First and last name of the occupant"
+        label={t('Full Name *')}
+        hint={t('First and last name of the occupant')}
         value={form.full_name}
         onChange={e => setForm({ ...form, full_name: e.target.value })}
         required
-        placeholder="e.g. Jean Dupont"
+        placeholder={t('e.g. Jean Dupont')}
       />
 
       {/* Gender and phone */}
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
         <GlassSelect
-          label="Gender *"
-          hint="Biological gender"
+          label={t('Gender *')}
+          hint={t('Biological gender')}
           value={form.gender}
           onChange={e => setForm({ ...form, gender: e.target.value })}
-          options={[{ value: 'male', label: 'Male' }, { value: 'female', label: 'Female' }]}
+          options={[{ value: 'male', label: t('Male') }, { value: 'female', label: t('Female') }]}
         />
         <GlassInput
-          label="Phone"
-          hint="Mobile or landline number"
+          label={t('Phone')}
+          hint={t('Mobile or landline number')}
           value={form.phone}
           onChange={e => setForm({ ...form, phone: e.target.value })}
           placeholder="+225 07 00 00 00"
@@ -83,33 +85,37 @@ export default function OccupantForm({ occupant, rooms = [], buildings = [], sit
       {/* Email and ID number */}
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
         <GlassInput
-          label="Email"
-          hint="Contact email address"
+          label={t('Email')}
+          hint={t('Contact email address')}
           value={form.email}
           onChange={e => setForm({ ...form, email: e.target.value })}
           placeholder="example@email.com"
           type="email"
         />
         <GlassInput
-          label="ID / Passport"
-          hint="National ID or passport number"
+          label={t('ID / Passport')}
+          hint={t('National ID or passport number')}
           value={form.id_number}
           onChange={e => setForm({ ...form, id_number: e.target.value })}
-          placeholder="e.g. CI12345678"
+          placeholder={t('e.g. CI12345678')}
         />
       </div>
 
       {/* Room assignment — only available rooms shown */}
       <GlassSelect
-        label="Room"
-        hint="Only available rooms are shown"
+        label={t('Room')}
+        hint={t('Only available rooms are shown')}
         value={form.room_id}
         onChange={e => setForm({ ...form, room_id: e.target.value })}
         options={[
-          { value: '', label: 'Select a room' },
+          { value: '', label: t('Select a room') },
           ...availableRooms.map(r => ({
             value: r.id,
-            label: `Room ${r.number} — ${r.building_name || '—'} (${(r.capacity || 1) - (r.current_occupants || 0)} places libres)`,
+            label: t('Room {n} — {b} ({c} free spots)', {
+              n: r.number,
+              b: r.building_name || '—',
+              c: (r.capacity || 1) - (r.current_occupants || 0),
+            }),
           })),
         ]}
       />
@@ -117,15 +123,15 @@ export default function OccupantForm({ occupant, rooms = [], buildings = [], sit
       {/* Check-in and check-out dates */}
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
         <GlassInput
-          label="Check-in Date"
-          hint="Date of arrival"
+          label={t('Check-in Date')}
+          hint={t('Date of arrival')}
           type="date"
           value={form.check_in_date}
           onChange={e => setForm({ ...form, check_in_date: e.target.value })}
         />
         <GlassInput
-          label="Check-out Date"
-          hint="Leave blank if unknown"
+          label={t('Check-out Date')}
+          hint={t('Leave blank if unknown')}
           type="date"
           value={form.check_out_date}
           onChange={e => setForm({ ...form, check_out_date: e.target.value })}
@@ -134,17 +140,17 @@ export default function OccupantForm({ occupant, rooms = [], buildings = [], sit
 
       {/* Optional notes */}
       <GlassTextarea
-        label="Notes"
-        hint="Any additional information about the occupant"
+        label={t('Notes')}
+        hint={t('Any additional information about the occupant')}
         value={form.notes}
         onChange={e => setForm({ ...form, notes: e.target.value })}
-        placeholder="Additional notes..."
+        placeholder={t('Additional notes...')}
       />
 
       {/* Form action buttons */}
       <div className="flex justify-end gap-3 pt-2">
-        <GlassButton variant="secondary" type="button" onClick={onCancel}>Cancel</GlassButton>
-        <GlassButton type="submit">{occupant ? 'Update' : 'Add Occupant'}</GlassButton>
+        <GlassButton variant="secondary" type="button" onClick={onCancel}>{t('Cancel')}</GlassButton>
+        <GlassButton type="submit">{occupant ? t('Update') : t('Add Occupant')}</GlassButton>
       </div>
     </form>
   );

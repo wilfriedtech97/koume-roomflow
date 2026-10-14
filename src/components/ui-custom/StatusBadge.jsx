@@ -1,4 +1,5 @@
 import React from 'react';
+import { useT } from '@/lib/i18n';
 
 // Color mapping per status value
 const statusStyles = {
@@ -12,16 +13,18 @@ const statusStyles = {
   confirmed: 'bg-cyan-500/15 text-cyan-400 border-cyan-500/30',
   canceled: 'bg-rose-500/15 text-rose-400 border-rose-500/30',
   checked_out: 'bg-slate-500/15 text-slate-400 border-slate-500/30',
+  construction: 'bg-amber-500/15 text-amber-400 border-amber-500/30',
 };
 
 // Displays a color-coded pill badge for a given status string
 export default function StatusBadge({ status }) {
+  const t = useT();
   // Fall back to 'inactive' style for unknown statuses
   const style = statusStyles[status] || statusStyles.inactive;
   return (
     <span className={`inline-flex px-2.5 py-0.5 rounded-full text-xs font-medium border ${style}`}>
-      {/* Replace underscores with spaces for readability */}
-      {(status || '').replace(/_/g, ' ')}
+      {/* Translate, then keep underscores as spaces for unknown values */}
+      {status ? t(status).replace(/_/g, ' ') : ''}
     </span>
   );
 }

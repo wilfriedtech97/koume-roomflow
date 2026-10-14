@@ -2,13 +2,14 @@ import React from 'react';
 import { DoorOpen, Users, Droplets, ShowerHead, Bath, Wind, Lightbulb, Wifi, Pencil, Trash2, MapPin, Building2 } from 'lucide-react';
 import StatusBadge from '../ui-custom/StatusBadge';
 import GlassButton from '../ui-custom/GlassButton';
+import { useT } from '@/lib/i18n';
 
 const facilityIcons = [
-  { key: 'hot_water', icon: Droplets, label: 'Eau chaude' },
-  { key: 'internal_shower', icon: ShowerHead, label: 'Douche' },
-  { key: 'bathroom', icon: Bath, label: 'Salle de bain' },
-  { key: 'fan', icon: Wind, label: 'Ventilateur' },
-  { key: 'lighting', icon: Lightbulb, label: 'Éclairage' },
+  { key: 'hot_water', icon: Droplets, label: 'Hot water' },
+  { key: 'internal_shower', icon: ShowerHead, label: 'Shower' },
+  { key: 'bathroom', icon: Bath, label: 'Bathroom' },
+  { key: 'fan', icon: Wind, label: 'Fan' },
+  { key: 'lighting', icon: Lightbulb, label: 'Lighting' },
   { key: 'internet', icon: Wifi, label: 'Internet' },
 ];
 
@@ -21,10 +22,11 @@ const genreColors = {
 };
 
 const GENRE_LABELS = {
-  standard: 'Classique', vip: 'VIP', couple: 'Couple', prayer: 'Prière', family: 'Family',
+  standard: 'Classic', vip: 'VIP', couple: 'Couple', prayer: 'Prayer', family: 'Family',
 };
 
 export default function RoomCard({ room, onEdit, onDelete }) {
+  const t = useT();
   const gc = genreColors[room.genre] || genreColors.standard;
   const statusBorderColor = room.status === 'available' ? 'border-emerald-500/40' : room.status === 'occupied' ? 'border-rose-500/40' : 'border-slate-500/30';
   const capacity = room.capacity || room.bed_count || 1;
@@ -41,9 +43,9 @@ export default function RoomCard({ room, onEdit, onDelete }) {
             <DoorOpen className="w-5 h-5 text-cyan-400" />
           </div>
           <div>
-            <h4 className="font-bold text-white text-base leading-tight">Chambre {room.number}</h4>
+            <h4 className="font-bold text-white text-base leading-tight">{t('Room {n}', { n: room.number })}</h4>
             <span className={`inline-block mt-0.5 text-[10px] font-medium px-2 py-0.5 rounded-full ${gc.badge}`}>
-              {GENRE_LABELS[room.genre] || room.genre}
+              {t(GENRE_LABELS[room.genre] || room.genre)}
             </span>
           </div>
         </div>
@@ -71,10 +73,10 @@ export default function RoomCard({ room, onEdit, onDelete }) {
         <div className="flex items-center justify-between mb-1.5">
           <div className="flex items-center gap-1.5 text-xs text-slate-400">
             <Users className="w-3.5 h-3.5" />
-            <span>Capacité : <span className="text-white font-semibold">{capacity}</span> pers.</span>
+            <span>{t('Capacity: {n} pers.', { n: capacity })}</span>
           </div>
           <span className={`text-xs font-medium ${free > 0 ? 'text-emerald-400' : 'text-rose-400'}`}>
-            {free} libre{free !== 1 ? 's' : ''}
+            {free} {t(free !== 1 ? 'free spots' : 'free spot')}
           </span>
         </div>
         <div className="w-full h-1.5 rounded-full bg-slate-700/60 overflow-hidden">
@@ -90,7 +92,7 @@ export default function RoomCard({ room, onEdit, onDelete }) {
         <div className="flex flex-wrap gap-1.5">
           {activeFacilities.map(f => (
             <span key={f.key} className="inline-flex items-center gap-1 px-2 py-0.5 rounded-md bg-slate-800/70 text-[10px] text-cyan-400/80 border border-slate-700/40">
-              <f.icon className="w-3 h-3" /> {f.label}
+              <f.icon className="w-3 h-3" /> {t(f.label)}
             </span>
           ))}
         </div>
@@ -99,10 +101,10 @@ export default function RoomCard({ room, onEdit, onDelete }) {
       {/* Actions — always visible */}
       <div className="flex gap-2 pt-1 border-t border-slate-700/40">
         <GlassButton variant="ghost" className="text-xs flex-1 justify-center" onClick={onEdit}>
-          <Pencil className="w-3 h-3" /> Modifier
+          <Pencil className="w-3 h-3" /> {t('Edit')}
         </GlassButton>
         <GlassButton variant="ghost" className="text-xs flex-1 justify-center text-rose-400 hover:bg-rose-500/10" onClick={onDelete}>
-          <Trash2 className="w-3 h-3" /> Supprimer
+          <Trash2 className="w-3 h-3" /> {t('Delete')}
         </GlassButton>
       </div>
     </div>

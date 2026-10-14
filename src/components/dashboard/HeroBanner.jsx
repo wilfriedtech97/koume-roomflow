@@ -1,6 +1,7 @@
 import React, { useRef, useEffect } from 'react';
 import * as THREE from 'three';
 import { motion } from 'framer-motion';
+import { useT } from '@/lib/i18n';
 
 export default function HeroBanner({ occupancyRate = 0, activeSites = 0, availableRooms = 0, availableBuildings = 0 }) {
   const globeRef = useRef(null);
@@ -83,11 +84,12 @@ export default function HeroBanner({ occupancyRate = 0, activeSites = 0, availab
     };
   }, []);
 
+  const t = useT();
   const stats = [
-    { label: 'Occupancy', value: `${occupancyRate}%`, color: 'from-cyan-400 to-blue-500' },
-    { label: 'Active Sites', value: activeSites, color: 'from-violet-400 to-purple-500' },
-    { label: 'Available Rooms', value: availableRooms, color: 'from-emerald-400 to-green-500' },
-    { label: 'Buildings', value: availableBuildings, color: 'from-amber-400 to-orange-500' },
+    { label: t('Occupancy'), value: `${occupancyRate}%`, color: 'from-cyan-400 to-blue-500' },
+    { label: t('Active Sites'), value: activeSites, color: 'from-violet-400 to-purple-500' },
+    { label: t('Available Rooms'), value: availableRooms, color: 'from-emerald-400 to-green-500' },
+    { label: t('Buildings'), value: availableBuildings, color: 'from-amber-400 to-orange-500' },
   ];
 
   return (
@@ -105,10 +107,10 @@ export default function HeroBanner({ occupancyRate = 0, activeSites = 0, availab
             className="text-3xl lg:text-4xl font-bold text-white mb-3"
             style={{ textShadow: '0 0 30px rgba(6, 182, 212, 0.2)' }}
           >
-            Welcome to Koume RoomFlow
+            {t('Welcome to Koume RoomFlow')}
           </motion.h1>
           <p className="text-slate-400 text-sm mb-6 max-w-md">
-            Complete dormitory management — track rooms, occupants, and reservations in real time.
+            {t('Complete dormitory management — track rooms, occupants, and reservations in real time.')}
           </p>
           <div className="grid grid-cols-2 gap-3">
             {stats.map((s, i) => (

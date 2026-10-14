@@ -4,18 +4,20 @@ import { Link } from 'react-router-dom';
 import { createPageUrl } from '@/utils';
 import StatusBadge from '../ui-custom/StatusBadge';
 import moment from 'moment';
+import { useT } from '@/lib/i18n';
 
 export default function RecentOccupants({ occupants = [] }) {
+  const t = useT();
   const recent = occupants.slice(0, 6);
 
   return (
     <div className="entity-card p-6">
       <div className="flex items-center justify-between mb-4">
         <h3 className="text-sm font-semibold text-white flex items-center gap-2">
-          <Users className="w-4 h-4 text-cyan-400" /> Recent Occupants
+          <Users className="w-4 h-4 text-cyan-400" /> {t('Recent Occupants')}
         </h3>
         <Link to={createPageUrl('Occupants')} className="text-xs text-cyan-400 hover:text-cyan-300 flex items-center gap-1">
-          View all <ArrowRight className="w-3 h-3" />
+          {t('View all')} <ArrowRight className="w-3 h-3" />
         </Link>
       </div>
       {recent.length > 0 ? (
@@ -28,7 +30,7 @@ export default function RecentOccupants({ occupants = [] }) {
                 </div>
                 <div>
                   <p className="text-sm font-medium text-white">{occ.full_name}</p>
-                  <p className="text-[11px] text-slate-500">Room {occ.room_number || '—'} • {occ.building_name || '—'}</p>
+                  <p className="text-[11px] text-slate-500">{t('Room {n} • {b}', { n: occ.room_number || '—', b: occ.building_name || '—' })}</p>
                 </div>
               </div>
               <div className="flex items-center gap-3">
@@ -39,7 +41,7 @@ export default function RecentOccupants({ occupants = [] }) {
           ))}
         </div>
       ) : (
-        <p className="text-slate-500 text-sm text-center py-6">No occupants yet</p>
+        <p className="text-slate-500 text-sm text-center py-6">{t('No occupants yet')}</p>
       )}
     </div>
   );

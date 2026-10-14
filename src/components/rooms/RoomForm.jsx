@@ -1,12 +1,13 @@
 import React, { useState } from 'react';
 import GlassButton from '../ui-custom/GlassButton';
+import { useT } from '@/lib/i18n';
 
 const facilities = [
-  { key: 'hot_water', label: 'Eau Chaude' },
-  { key: 'internal_shower', label: 'Douche Interne' },
-  { key: 'bathroom', label: 'Salle de Bain' },
-  { key: 'fan', label: 'Ventilateur' },
-  { key: 'lighting', label: 'Éclairage' },
+  { key: 'hot_water', label: 'Hot water' },
+  { key: 'internal_shower', label: 'Internal shower' },
+  { key: 'bathroom', label: 'Bathroom' },
+  { key: 'fan', label: 'Fan' },
+  { key: 'lighting', label: 'Lighting' },
   { key: 'internet', label: 'Internet' },
 ];
 
@@ -14,6 +15,7 @@ const inputClass = "w-full px-3 py-2.5 rounded-md bg-black border border-slate-6
 const labelClass = "text-xs font-semibold text-slate-300 uppercase tracking-wide mb-0.5 block";
 
 export default function RoomForm({ room, sites = [], buildings = [], onSubmit, onCancel }) {
+  const t = useT();
   const [form, setForm] = useState({
     number: room?.number || '',
     site_id: room?.site_id || '',
@@ -46,62 +48,62 @@ export default function RoomForm({ room, sites = [], buildings = [], onSubmit, o
   return (
     <form onSubmit={handleSubmit} className="space-y-4">
       <div>
-        <label className={labelClass}>Numéro de Chambre *</label>
-        <input className={inputClass} value={form.number} onChange={e => setForm({ ...form, number: e.target.value })} required placeholder="ex: 101" />
-        <p className="text-xs text-slate-500 mt-0.5">Identifiant unique de la chambre</p>
+        <label className={labelClass}>{t('Room Number *')}</label>
+        <input className={inputClass} value={form.number} onChange={e => setForm({ ...form, number: e.target.value })} required placeholder={t('ex: 101')} />
+        <p className="text-xs text-slate-500 mt-0.5">{t('Unique room identifier')}</p>
       </div>
 
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
         <div>
-          <label className={labelClass}>Site *</label>
+          <label className={labelClass}>{t('Site *')}</label>
           <select className={inputClass} value={form.site_id} onChange={e => setForm({ ...form, site_id: e.target.value, building_id: '' })}>
-            <option value="">Sélectionner un site</option>
+            <option value="">{t('Select a site')}</option>
             {sites.map(s => <option key={s.id} value={s.id} className="bg-black text-white">{s.name}</option>)}
           </select>
-          <p className="text-xs text-slate-500 mt-0.5">Site où se trouve la chambre</p>
+          <p className="text-xs text-slate-500 mt-0.5">{t('Site where the room is located')}</p>
         </div>
         <div>
-          <label className={labelClass}>Bâtiment *</label>
+          <label className={labelClass}>{t('Building *')}</label>
           <select className={inputClass} value={form.building_id} onChange={e => setForm({ ...form, building_id: e.target.value })}>
-            <option value="">Sélectionner un bâtiment</option>
+            <option value="">{t('Select a building')}</option>
             {filteredBuildings.map(b => <option key={b.id} value={b.id} className="bg-black text-white">{b.name}</option>)}
           </select>
-          <p className="text-xs text-slate-500 mt-0.5">Bâtiment du site sélectionné</p>
+          <p className="text-xs text-slate-500 mt-0.5">{t('Building of the selected site')}</p>
         </div>
       </div>
 
       <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
         <div>
-          <label className={labelClass}>Type de Chambre</label>
+          <label className={labelClass}>{t('Room Type')}</label>
           <select className={inputClass} value={form.genre} onChange={e => setForm({ ...form, genre: e.target.value })}>
-            <option value="standard" className="bg-black text-white">CLASSIQUE</option>
-            <option value="vip" className="bg-black text-white">VIP</option>
-            <option value="couple" className="bg-black text-white">COUPLE</option>
-            <option value="prayer" className="bg-black text-white">PRIÈRE</option>
-            <option value="family" className="bg-black text-white">FAMILLE</option>
+            <option value="standard" className="bg-black text-white">{t('Classic')}</option>
+            <option value="vip" className="bg-black text-white">{t('VIP')}</option>
+            <option value="couple" className="bg-black text-white">{t('Couple')}</option>
+            <option value="prayer" className="bg-black text-white">{t('Prayer')}</option>
+            <option value="family" className="bg-black text-white">{t('Family')}</option>
           </select>
-          <p className="text-xs text-slate-500 mt-0.5">Catégorie de la chambre</p>
+          <p className="text-xs text-slate-500 mt-0.5">{t('Room category')}</p>
         </div>
         <div>
-          <label className={labelClass}>Statut</label>
+          <label className={labelClass}>{t('Status')}</label>
           <select className={inputClass} value={form.status} onChange={e => setForm({ ...form, status: e.target.value })}>
-            <option value="available" className="bg-black text-white">Disponible</option>
-            <option value="occupied" className="bg-black text-white">Occupée</option>
-            <option value="unavailable" className="bg-black text-white">Indisponible</option>
-            <option value="construction" className="bg-black text-white">🏗️ En construction</option>
+            <option value="available" className="bg-black text-white">{t('Available')}</option>
+            <option value="occupied" className="bg-black text-white">{t('Occupied')}</option>
+            <option value="unavailable" className="bg-black text-white">{t('Unavailable')}</option>
+            <option value="construction" className="bg-black text-white">{t('🏗️ Construction')}</option>
           </select>
-          <p className="text-xs text-slate-500 mt-0.5">Disponibilité actuelle</p>
+          <p className="text-xs text-slate-500 mt-0.5">{t('Current availability')}</p>
         </div>
         <div>
-          <label className={labelClass}>Nombre de personnes</label>
-          <input className={inputClass} type="number" min="1" value={form.capacity} onChange={e => setForm({ ...form, capacity: e.target.value })} placeholder="ex: 2" />
-          <p className="text-xs text-slate-500 mt-0.5">Capacité maximale d'accueil</p>
+          <label className={labelClass}>{t('Number of people')}</label>
+          <input className={inputClass} type="number" min="1" value={form.capacity} onChange={e => setForm({ ...form, capacity: e.target.value })} placeholder={t('ex: 2')} />
+          <p className="text-xs text-slate-500 mt-0.5">{t('Maximum guest capacity')}</p>
         </div>
       </div>
 
       <div>
-        <label className={labelClass}>Équipements</label>
-        <p className="text-xs text-slate-500 mb-2">Cochez les équipements disponibles dans cette chambre</p>
+        <label className={labelClass}>{t('Facilities')}</label>
+        <p className="text-xs text-slate-500 mb-2">{t('Check the facilities available in this room')}</p>
         <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
           {facilities.map(f => (
             <label key={f.key} className="flex items-center gap-2 text-sm font-medium text-slate-300 cursor-pointer">
@@ -111,15 +113,15 @@ export default function RoomForm({ room, sites = [], buildings = [], onSubmit, o
                 onChange={e => setForm({ ...form, [f.key]: e.target.checked })}
                 className="w-4 h-4 rounded border-slate-400 text-cyan-500 focus:ring-cyan-500/30"
               />
-              {f.label}
+              {t(f.label)}
             </label>
           ))}
         </div>
       </div>
 
       <div className="flex justify-end gap-3 pt-2">
-        <GlassButton variant="secondary" type="button" onClick={onCancel}>Annuler</GlassButton>
-        <GlassButton type="submit">{room ? 'Mettre à jour' : 'Créer la Chambre'}</GlassButton>
+        <GlassButton variant="secondary" type="button" onClick={onCancel}>{t('Cancel')}</GlassButton>
+        <GlassButton type="submit">{room ? t('Update') : t('Create Room')}</GlassButton>
       </div>
     </form>
   );

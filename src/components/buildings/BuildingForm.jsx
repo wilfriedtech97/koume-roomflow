@@ -3,8 +3,10 @@ import GlassInput from '../ui-custom/GlassInput';
 import GlassTextarea from '../ui-custom/GlassTextarea';
 import GlassSelect from '../ui-custom/GlassSelect';
 import GlassButton from '../ui-custom/GlassButton';
+import { useT } from '@/lib/i18n';
 
 export default function BuildingForm({ building, sites = [], onSubmit, onCancel }) {
+  const t = useT();
   const [form, setForm] = useState({
     name: building?.name || '',
     site_id: building?.site_id || '',
@@ -25,23 +27,23 @@ export default function BuildingForm({ building, sites = [], onSubmit, onCancel 
 
   return (
     <form onSubmit={handleSubmit} className="space-y-4">
-      <GlassInput label="Building Name *" hint="Unique name to identify this building" value={form.name} onChange={e => setForm({ ...form, name: e.target.value })} required placeholder="e.g. Block A" />
-      <GlassSelect label="Site *" hint="Select the site this building belongs to" value={form.site_id} onChange={e => setForm({ ...form, site_id: e.target.value })} options={[
-        { value: '', label: 'Select a site' },
+      <GlassInput label={t('Building Name *')} hint={t('Unique name to identify this building')} value={form.name} onChange={e => setForm({ ...form, name: e.target.value })} required placeholder={t('e.g. Block A')} />
+      <GlassSelect label={t('Site *')} hint={t('Select the site this building belongs to')} value={form.site_id} onChange={e => setForm({ ...form, site_id: e.target.value })} options={[
+        { value: '', label: t('Select a site') },
         ...sites.map(s => ({ value: s.id, label: s.name })),
       ]} />
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-        <GlassInput label="Floors" hint="Total number of floors" type="number" value={form.floors} onChange={e => setForm({ ...form, floors: e.target.value })} placeholder="e.g. 3" />
-        <GlassSelect label="Status" hint="Current operational status" value={form.status} onChange={e => setForm({ ...form, status: e.target.value })} options={[
-          { value: 'active', label: 'Active' },
-          { value: 'inactive', label: 'Inactive' },
-          { value: 'maintenance', label: 'Maintenance' },
+        <GlassInput label={t('Floors')} hint={t('Total number of floors')} type="number" value={form.floors} onChange={e => setForm({ ...form, floors: e.target.value })} placeholder={t('e.g. 3')} />
+        <GlassSelect label={t('Status')} hint={t('Current operational status')} value={form.status} onChange={e => setForm({ ...form, status: e.target.value })} options={[
+          { value: 'active', label: t('Active') },
+          { value: 'inactive', label: t('Inactive') },
+          { value: 'maintenance', label: t('Maintenance') },
         ]} />
       </div>
-      <GlassTextarea label="Description" hint="Optional details about this building" value={form.description} onChange={e => setForm({ ...form, description: e.target.value })} placeholder="Brief description..." />
+      <GlassTextarea label={t('Description')} hint={t('Optional details about this building')} value={form.description} onChange={e => setForm({ ...form, description: e.target.value })} placeholder={t('Brief description...')} />
       <div className="flex justify-end gap-3 pt-2">
-        <GlassButton variant="secondary" type="button" onClick={onCancel}>Cancel</GlassButton>
-        <GlassButton type="submit">{building ? 'Update Building' : 'Create Building'}</GlassButton>
+        <GlassButton variant="secondary" type="button" onClick={onCancel}>{t('Cancel')}</GlassButton>
+        <GlassButton type="submit">{building ? t('Update Building') : t('Create Building')}</GlassButton>
       </div>
     </form>
   );

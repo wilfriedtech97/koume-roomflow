@@ -8,6 +8,7 @@ import EmptyState from '../components/ui-custom/EmptyState';
 import LoadingSpinner from '../components/ui-custom/LoadingSpinner';
 import ExportButton from '../components/ui-custom/ExportButton';
 import moment from 'moment';
+import { useT } from '@/lib/i18n';
 
 // Gradient color per event type for the timeline indicator bar
 const eventColors = {
@@ -21,6 +22,7 @@ const eventColors = {
 };
 
 export default function History() {
+  const t = useT();
   // Filter by event type (empty = all events)
   const [typeFilter, setTypeFilter] = useState('');
 
@@ -42,8 +44,8 @@ export default function History() {
     <div>
       {/* Page title with total event count and export button */}
       <PageHeader
-        title="History"
-        subtitle={`${events.length} events recorded`}
+        title={t('History')}
+        subtitle={t('{n} events recorded', { n: events.length })}
         action={<ExportButton data={events} filename="history" />}
       />
 
@@ -53,21 +55,21 @@ export default function History() {
           value={typeFilter}
           onChange={e => setTypeFilter(e.target.value)}
           options={[
-            { value: '', label: 'All Events' },
-            { value: 'check_in', label: 'Check In' },
-            { value: 'check_out', label: 'Check Out' },
-            { value: 'reservation', label: 'Reservation' },
-            { value: 'room_update', label: 'Room Update' },
-            { value: 'site_update', label: 'Site Update' },
-            { value: 'building_update', label: 'Building Update' },
-            { value: 'cancellation', label: 'Cancellation' },
+            { value: '', label: t('All Events') },
+            { value: 'check_in', label: t('check_in') },
+            { value: 'check_out', label: t('check_out') },
+            { value: 'reservation', label: t('reservation') },
+            { value: 'room_update', label: t('room_update') },
+            { value: 'site_update', label: t('site_update') },
+            { value: 'building_update', label: t('building_update') },
+            { value: 'cancellation', label: t('cancellation') },
           ]}
         />
       </div>
 
       {/* Event timeline list or empty state */}
       {filtered.length === 0 ? (
-        <EmptyState icon={Clock} title="No events" message="Events will appear as actions are performed." />
+        <EmptyState icon={Clock} title={t('No events')} message={t('Events will appear as actions are performed.')} />
       ) : (
         <div className="space-y-3">
           {filtered.map(ev => (
@@ -83,11 +85,11 @@ export default function History() {
                 {/* Event type label and description */}
                 <div className="flex-1">
                   <div className="flex items-center gap-2 mb-0.5">
-                    <span className="text-xs font-medium text-slate-400 capitalize">
-                      {(ev.event_type || '').replace(/_/g, ' ')}
+                    <span className="text-xs font-medium text-slate-400">
+                      {ev.event_type ? t(ev.event_type) : ''}
                     </span>
                     <span className="text-[10px] text-slate-600">•</span>
-                    <span className="text-[10px] text-slate-500">{ev.entity_type}</span>
+                    <span className="text-[10px] text-slate-500">{ev.entity_type ? t(ev.entity_type) : ''}</span>
                   </div>
                   <p className="text-sm text-white">{ev.description}</p>
                 </div>

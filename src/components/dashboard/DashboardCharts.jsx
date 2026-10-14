@@ -1,24 +1,26 @@
 import React from 'react';
 import { PieChart, Pie, Cell, BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, Legend } from 'recharts';
+import { useT } from '@/lib/i18n';
 
 const COLORS = ['#10b981', '#f43f5e', '#64748b'];
 
 export default function DashboardCharts({ rooms = [], sites = [] }) {
+  const t = useT();
   const statusData = [
-    { name: 'Available', value: rooms.filter(r => r.status === 'available').length },
-    { name: 'Occupied', value: rooms.filter(r => r.status === 'occupied').length },
-    { name: 'Unavailable', value: rooms.filter(r => r.status === 'unavailable').length },
+    { name: t('Available'), value: rooms.filter(r => r.status === 'available').length },
+    { name: t('Occupied'), value: rooms.filter(r => r.status === 'occupied').length },
+    { name: t('Unavailable'), value: rooms.filter(r => r.status === 'unavailable').length },
   ].filter(d => d.value > 0);
 
   const siteData = sites.map(s => ({
-    name: s.name?.substring(0, 12) || 'Unknown',
+    name: s.name?.substring(0, 12) || t('Unknown'),
     rooms: rooms.filter(r => r.site_id === s.id).length,
   }));
 
   return (
     <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
       <div className="entity-card p-6">
-        <h3 className="text-sm font-semibold text-white mb-4">Room Status</h3>
+        <h3 className="text-sm font-semibold text-white mb-4">{t('Room Status')}</h3>
         {statusData.length > 0 ? (
           <ResponsiveContainer width="100%" height={220}>
             <PieChart>
@@ -30,11 +32,11 @@ export default function DashboardCharts({ rooms = [], sites = [] }) {
             </PieChart>
           </ResponsiveContainer>
         ) : (
-          <p className="text-slate-500 text-sm text-center py-8">No rooms yet</p>
+          <p className="text-slate-500 text-sm text-center py-8">{t('No rooms yet')}</p>
         )}
       </div>
       <div className="entity-card p-6">
-        <h3 className="text-sm font-semibold text-white mb-4">Rooms by Site</h3>
+        <h3 className="text-sm font-semibold text-white mb-4">{t('Rooms by Site')}</h3>
         {siteData.length > 0 ? (
           <ResponsiveContainer width="100%" height={220}>
             <BarChart data={siteData}>
@@ -45,7 +47,7 @@ export default function DashboardCharts({ rooms = [], sites = [] }) {
             </BarChart>
           </ResponsiveContainer>
         ) : (
-          <p className="text-slate-500 text-sm text-center py-8">No sites yet</p>
+          <p className="text-slate-500 text-sm text-center py-8">{t('No sites yet')}</p>
         )}
       </div>
     </div>

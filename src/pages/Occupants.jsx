@@ -11,8 +11,10 @@ import LoadingSpinner from '../components/ui-custom/LoadingSpinner';
 import ExportButton from '../components/ui-custom/ExportButton';
 import OccupantForm from '../components/occupants/OccupantForm';
 import moment from 'moment';
+import { useT } from '@/lib/i18n';
 
 export default function Occupants() {
+  const t = useT();
   // Modal state for create/edit occupant dialog
   const [modal, setModal] = useState({ open: false, occupant: null });
 
@@ -121,12 +123,12 @@ export default function Occupants() {
       {/* Page header with active count subtitle and export/add actions */}
       <PageHeader
         title="Occupants"
-        subtitle={`${occupants.filter(o => o.status === 'active').length} active occupants`}
+        subtitle={t('{n} active occupants', { n: occupants.filter(o => o.status === 'active').length })}
         action={
           <div className="flex gap-3">
             <ExportButton data={occupants} filename="occupants" />
             <GlassButton onClick={() => setModal({ open: true, occupant: null })}>
-              <Plus className="w-4 h-4" /> Add Occupant
+              <Plus className="w-4 h-4" /> {t('Add Occupant')}
             </GlassButton>
           </div>
         }
@@ -138,7 +140,7 @@ export default function Occupants() {
           <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-500" />
           <input
             className="w-full pl-10 pr-4 py-2.5 glass-input text-sm"
-            placeholder="Search occupants..."
+            placeholder={t('Search occupants...')}
             value={search}
             onChange={e => setSearch(e.target.value)}
           />
@@ -147,7 +149,7 @@ export default function Occupants() {
 
       {/* Occupant cards grid or empty state */}
       {filtered.length === 0 ? (
-        <EmptyState icon={Users} title="No occupants" message="Add an occupant or adjust your search." />
+        <EmptyState icon={Users} title={t('No occupants')} message={t('Add an occupant or adjust your search.')} />
       ) : (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
           {filtered.map(occ => (
@@ -161,7 +163,7 @@ export default function Occupants() {
                   </div>
                   <div>
                     <h3 className="font-semibold text-white text-sm">{occ.full_name}</h3>
-                    <p className="text-[11px] text-slate-500">Room {occ.room_number || '—'} • {occ.building_name || '—'}</p>
+                    <p className="text-[11px] text-slate-500">{t('Room {n} • {b}', { n: occ.room_number || '—', b: occ.building_name || '—' })}</p>
                   </div>
                 </div>
                 <StatusBadge status={occ.status} />
@@ -170,21 +172,21 @@ export default function Occupants() {
               {/* Occupant details: phone and stay dates */}
               <div className="text-xs text-slate-400 space-y-1 mb-3">
                 {occ.phone && <p>📞 {occ.phone}</p>}
-                <p>📅 {occ.check_in_date ? moment(occ.check_in_date).format('MMM D, YYYY') : '—'} → {occ.check_out_date ? moment(occ.check_out_date).format('MMM D, YYYY') : 'Ongoing'}</p>
+                <p>📅 {occ.check_in_date ? moment(occ.check_in_date).format('LL') : '—'} → {occ.check_out_date ? moment(occ.check_out_date).format('LL') : t('Ongoing')}</p>
               </div>
 
               {/* Action buttons: Edit and Check Out (only for active occupants) — visible on hover */}
               <div className="flex gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
                 <GlassButton variant="ghost" className="text-xs" onClick={() => setModal({ open: true, occupant: occ })}>
-                  <Pencil className="w-3 h-3" /> Edit
+                  <Pencil className="w-3 h-3" /> {t('Edit')}
                 </GlassButton>
                 {occ.status === 'active' && (
                   <GlassButton
                     variant="ghost"
                     className="text-xs text-amber-400"
-                    onClick={() => { if (confirm('Check out this occupant?')) checkoutMut.mutate(occ); }}
+                    onClick={() => { if (confirm(t('Check out this occupant?'))) checkoutMut.mutate(occ); }}
                   >
-                    <LogOut className="w-3 h-3" /> Check Out
+                    <LogOut className="w-3 h-3" /> {t('Check Out')}
                   </GlassButton>
                 )}
               </div>
@@ -197,7 +199,7 @@ export default function Occupants() {
       <GlassModal
         open={modal.open}
         onClose={() => setModal({ open: false, occupant: null })}
-        title={modal.occupant ? 'Edit Occupant' : 'New Occupant'}
+        title={modal.occupant ? t('Edit Occupant') : t('New Occupant')}
         maxWidth="max-w-xl"
       >
         <OccupantForm

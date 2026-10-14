@@ -9,6 +9,8 @@ import {
 import { motion, AnimatePresence } from 'framer-motion';
 import SyncStatus from '@/components/ui-custom/SyncStatus';
 import ThemeToggle from '@/components/ui-custom/ThemeToggle';
+import LanguageToggle from '@/components/ui-custom/LanguageToggle';
+import { useT } from '@/lib/i18n';
 
 const navSections = [
   {
@@ -35,6 +37,7 @@ const navSections = [
 const visitorPages = ['Dashboard', 'Reservations', 'History', 'SearchPage'];
 
 export default function Layout({ children, currentPageName }) {
+  const t = useT();
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [user, setUser] = useState(null);
 
@@ -55,10 +58,10 @@ export default function Layout({ children, currentPageName }) {
       <div className="min-h-screen flex items-center justify-center p-4 bg-app">
         <div className="glass-card p-8 text-center max-w-md">
           <Shield className="w-12 h-12 text-cyan-400 mx-auto mb-4" />
-          <h2 className="text-xl font-bold text-white mb-2">Access Restricted</h2>
-          <p className="text-slate-400 mb-6">You don't have permission to access this page.</p>
+          <h2 className="text-xl font-bold text-white mb-2">{t('Access Restricted')}</h2>
+          <p className="text-slate-400 mb-6">{t("You don't have permission to access this page.")}</p>
           <Link to={createPageUrl('Dashboard')} className="text-gold hover:text-gold font-medium">
-            Go to Dashboard →
+            {t('Go to Dashboard →')}
           </Link>
         </div>
       </div>
@@ -89,7 +92,7 @@ export default function Layout({ children, currentPageName }) {
             </div>
             <div>
               <h1 className="font-bold text-white text-sm">Koume RoomFlow</h1>
-              <p className="text-[10px] text-inkmuted">Management System</p>
+              <p className="text-[10px] text-inkmuted">{t('Management System')}</p>
             </div>
           </div>
         </div>
@@ -98,7 +101,7 @@ export default function Layout({ children, currentPageName }) {
           {navSections.map(section => (
             <div key={section.title}>
               <p className="text-[10px] font-semibold text-inkmuted uppercase tracking-widest px-3 mb-2">
-                {section.title}
+                {t(section.title)}
               </p>
               <div className="space-y-0.5">
                 {section.items.filter(item => canAccess(item.page)).map(item => {
@@ -115,7 +118,7 @@ export default function Layout({ children, currentPageName }) {
                       }`}
                     >
                       <item.icon className="w-4.5 h-4.5" />
-                      {item.name}
+                      {t(item.name)}
                       {isActive && <ChevronRight className="w-3.5 h-3.5 ml-auto opacity-60" />}
                     </Link>
                   );
@@ -132,7 +135,7 @@ export default function Layout({ children, currentPageName }) {
             </div>
             <div className="flex-1 min-w-0">
               <p className="text-sm font-medium text-ink truncate">{user?.full_name || 'User'}</p>
-              <p className="text-[10px] text-inkmuted capitalize">{role}</p>
+              <p className="text-[10px] text-inkmuted capitalize">{role === 'admin' ? t('Admin') : role === 'user' ? t('User') : role}</p>
             </div>
           </div>
           <div className="flex items-center gap-2">
@@ -140,8 +143,9 @@ export default function Layout({ children, currentPageName }) {
               onClick={() => base44.auth.logout()}
               className="flex-1 flex items-center justify-center gap-2 px-3 py-2 text-xs text-inksoft hover:text-rose-400 hover:bg-rose-500/10 rounded-lg transition-colors"
             >
-              <LogOut className="w-3.5 h-3.5" /> Sign Out
+              <LogOut className="w-3.5 h-3.5" /> {t('Sign Out')}
             </button>
+            <LanguageToggle />
             <ThemeToggle />
           </div>
         </div>
@@ -154,7 +158,7 @@ export default function Layout({ children, currentPageName }) {
             <Menu className="w-5 h-5 text-ink" />
           </button>
           <span className="text-sm font-semibold text-ink">Koume RoomFlow</span>
-          <div className="ml-auto"><ThemeToggle /></div>
+          <div className="ml-auto flex items-center gap-2"><LanguageToggle /><ThemeToggle /></div>
         </div>
         <div className="p-4 md:p-6 lg:p-8">
           {children}

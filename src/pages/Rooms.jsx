@@ -11,8 +11,10 @@ import LoadingSpinner from '../components/ui-custom/LoadingSpinner';
 import ExportButton from '../components/ui-custom/ExportButton';
 import RoomForm from '../components/rooms/RoomForm';
 import RoomCard from '../components/rooms/RoomCard';
+import { useT } from '@/lib/i18n';
 
 export default function Rooms() {
+  const t = useT();
   // Modal state: controls create/edit room modal visibility and which room is being edited
   const [modal, setModal] = useState({ open: false, room: null });
 
@@ -63,13 +65,13 @@ export default function Rooms() {
     <div>
       {/* Page title and export/add action buttons */}
       <PageHeader
-        title="Rooms"
-        subtitle={`${rooms.length} rooms total`}
+        title={t('Rooms')}
+        subtitle={t('{n} rooms total', { n: rooms.length })}
         action={
           <div className="flex gap-3">
             <ExportButton data={rooms} filename="rooms" />
             <GlassButton onClick={() => setModal({ open: true, room: null })}>
-              <Plus className="w-4 h-4" /> Add Room
+              <Plus className="w-4 h-4" /> {t('Add Room')}
             </GlassButton>
           </div>
         }
@@ -81,41 +83,41 @@ export default function Rooms() {
         <GlassSelect
           value={filters.site}
           onChange={e => setFilters({ ...filters, site: e.target.value, building: '' })}
-          options={[{ value: '', label: 'All Sites' }, ...sites.map(s => ({ value: s.id, label: s.name }))]}
+          options={[{ value: '', label: t('All Sites') }, ...sites.map(s => ({ value: s.id, label: s.name }))]}
         />
         <GlassSelect
           value={filters.building}
           onChange={e => setFilters({ ...filters, building: e.target.value })}
-          options={[{ value: '', label: 'All Buildings' }, ...filteredBuildings.map(b => ({ value: b.id, label: b.name }))]}
+          options={[{ value: '', label: t('All Buildings') }, ...filteredBuildings.map(b => ({ value: b.id, label: b.name }))]}
         />
         <GlassSelect
           value={filters.status}
           onChange={e => setFilters({ ...filters, status: e.target.value })}
           options={[
-            { value: '', label: 'All Status' },
-            { value: 'available', label: 'Available' },
-            { value: 'occupied', label: 'Occupied' },
-            { value: 'unavailable', label: 'Unavailable' },
-            { value: 'construction', label: '🏗️ Construction' },
+            { value: '', label: t('All Status') },
+            { value: 'available', label: t('Available') },
+            { value: 'occupied', label: t('Occupied') },
+            { value: 'unavailable', label: t('Unavailable') },
+            { value: 'construction', label: t('🏗️ Construction') },
           ]}
         />
         <GlassSelect
           value={filters.genre}
           onChange={e => setFilters({ ...filters, genre: e.target.value })}
           options={[
-            { value: '', label: 'All Genres' },
-            { value: 'standard', label: 'Standard' },
-            { value: 'vip', label: 'VIP' },
-            { value: 'couple', label: 'Couple' },
-            { value: 'prayer', label: 'Prayer' },
-            { value: 'family', label: 'Family' },
+            { value: '', label: t('All Genres') },
+            { value: 'standard', label: t('Standard') },
+            { value: 'vip', label: t('VIP') },
+            { value: 'couple', label: t('Couple') },
+            { value: 'prayer', label: t('Prayer') },
+            { value: 'family', label: t('Family') },
           ]}
         />
       </div>
 
       {/* Rooms grid or empty state */}
       {filteredRooms.length === 0 ? (
-        <EmptyState icon={DoorOpen} title="No rooms" message="Create rooms or adjust your filters." />
+        <EmptyState icon={DoorOpen} title={t('No rooms')} message={t('Create rooms or adjust your filters.')} />
       ) : (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
           {filteredRooms.map(room => (
@@ -123,7 +125,7 @@ export default function Rooms() {
               key={room.id}
               room={room}
               onEdit={() => setModal({ open: true, room })}
-              onDelete={() => { if (confirm('Delete this room?')) deleteMut.mutate(room.id); }}
+              onDelete={() => { if (confirm(t('Delete this room?'))) deleteMut.mutate(room.id); }}
             />
           ))}
         </div>
@@ -133,7 +135,7 @@ export default function Rooms() {
       <GlassModal
         open={modal.open}
         onClose={() => setModal({ open: false, room: null })}
-        title={modal.room ? 'Edit Room' : 'New Room'}
+        title={modal.room ? t('Edit Room') : t('New Room')}
         maxWidth="max-w-xl"
       >
         <RoomForm
