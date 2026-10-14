@@ -34,8 +34,6 @@ const navSections = [
   },
 ];
 
-const visitorPages = ['Dashboard', 'Reservations', 'History', 'SearchPage'];
-
 export default function Layout({ children, currentPageName }) {
   const t = useT();
   const [sidebarOpen, setSidebarOpen] = useState(false);
@@ -46,27 +44,6 @@ export default function Layout({ children, currentPageName }) {
   }, []);
 
   const role = user?.role || 'user';
-  const isRestricted = role === 'visitor';
-
-  const canAccess = (page) => {
-    if (!isRestricted) return true;
-    return visitorPages.includes(page);
-  };
-
-  if (isRestricted && !canAccess(currentPageName)) {
-    return (
-      <div className="min-h-screen flex items-center justify-center p-4 bg-app">
-        <div className="glass-card p-8 text-center max-w-md">
-          <Shield className="w-12 h-12 text-cyan-400 mx-auto mb-4" />
-          <h2 className="text-xl font-bold text-white mb-2">{t('Access Restricted')}</h2>
-          <p className="text-slate-400 mb-6">{t("You don't have permission to access this page.")}</p>
-          <Link to={createPageUrl('Dashboard')} className="text-gold hover:text-gold font-medium">
-            {t('Go to Dashboard →')}
-          </Link>
-        </div>
-      </div>
-    );
-  }
 
   return (
     <div className="min-h-screen flex bg-app">
@@ -104,7 +81,7 @@ export default function Layout({ children, currentPageName }) {
                 {t(section.title)}
               </p>
               <div className="space-y-0.5">
-                {section.items.filter(item => canAccess(item.page)).map(item => {
+                {section.items.map(item => {
                   const isActive = currentPageName === item.page;
                   return (
                     <Link

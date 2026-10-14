@@ -456,4 +456,9 @@ export const FR = {
     "Astuce : Firefox ne prend pas en charge l'installation sur ordinateur — utilisez Chrome, Edge ou Safari.",
   'Use your browser menu to install the app (see steps below).':
     "Utilisez le menu de votre navigateur pour installer l'application (voir les étapes ci-dessous).",
+  // ── User role management (Admin) ─────────────────────────────
+  'User Roles': 'Rôles des utilisateurs',
+  'No users yet.': 'Aucun utilisateur pour le moment.',
+  'Role updated.': 'Rôle mis à jour.',
+  'Failed to update role.': 'Échec de la mise à jour du rôle.',
 };

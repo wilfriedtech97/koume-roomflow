@@ -10,6 +10,7 @@ import GlassButton from '../components/ui-custom/GlassButton';
 import LoadingSpinner from '../components/ui-custom/LoadingSpinner';
 import DatabaseManager from '../components/admin/DatabaseManager';
 import DesktopAppCard from '../components/admin/DesktopAppCard';
+import UserRoles from '../components/admin/UserRoles';
 import { useT } from '@/lib/i18n';
 
 export default function Admin() {
@@ -70,7 +71,10 @@ export default function Admin() {
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
-        {/* Current user profile display */}
+        {/* User role management (admin only) */}
+      <UserRoles />
+
+      {/* Current user profile display */}
         <div className="entity-card p-6">
           <h3 className="text-lg font-semibold text-white mb-4 flex items-center gap-2">
             <Shield className="w-5 h-5 text-cyan-400" /> {t('My Profile')}
@@ -110,7 +114,6 @@ export default function Admin() {
               onChange={e => setInviteRole(e.target.value)}
               options={[
                 { value: 'user', label: t('User (Full access)') },
-                { value: 'visitor', label: t('Visitor (Limited access)') },
                 { value: 'admin', label: t('Admin (Full + management)') },
               ]}
             />
