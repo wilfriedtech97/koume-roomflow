@@ -1,0 +1,39 @@
+{
+  "name": "Building",
+  "type": "object",
+  "properties": {
+    "name": {
+      "type": "string",
+      "description": "Building name"
+    },
+    "site_id": {
+      "type": "string",
+      "description": "Associated site ID"
+    },
+    "site_name": {
+      "type": "string",
+      "description": "Associated site name"
+    },
+    "floors": {
+      "type": "number",
+      "description": "Number of floors"
+    },
+    "description": {
+      "type": "string",
+      "description": "Building description"
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "active",
+        "inactive",
+        "maintenance"
+      ],
+      "default": "active"
+    }
+  },
+  "required": [
+    "name",
+    "site_id"
+  ]
+}

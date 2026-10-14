@@ -1,0 +1,43 @@
+{
+  "name": "HistoryEvent",
+  "type": "object",
+  "properties": {
+    "event_type": {
+      "type": "string",
+      "enum": [
+        "check_in",
+        "check_out",
+        "reservation",
+        "room_update",
+        "site_update",
+        "building_update",
+        "cancellation"
+      ],
+      "description": "Type of event"
+    },
+    "entity_type": {
+      "type": "string",
+      "description": "Entity involved (occupant, room, site, building, reservation)"
+    },
+    "entity_name": {
+      "type": "string",
+      "description": "Name of entity"
+    },
+    "description": {
+      "type": "string",
+      "description": "Event description"
+    },
+    "details": {
+      "type": "string",
+      "description": "Additional details JSON"
+    },
+    "timestamp": {
+      "type": "string",
+      "format": "date-time"
+    }
+  },
+  "required": [
+    "event_type",
+    "description"
+  ]
+}

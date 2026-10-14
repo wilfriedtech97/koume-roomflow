@@ -1,0 +1,69 @@
+{
+  "name": "Occupant",
+  "type": "object",
+  "properties": {
+    "full_name": {
+      "type": "string",
+      "description": "Full name"
+    },
+    "gender": {
+      "type": "string",
+      "enum": [
+        "male",
+        "female"
+      ],
+      "default": "male"
+    },
+    "phone": {
+      "type": "string",
+      "description": "Phone number"
+    },
+    "email": {
+      "type": "string",
+      "description": "Email"
+    },
+    "id_number": {
+      "type": "string",
+      "description": "ID/Passport number"
+    },
+    "room_id": {
+      "type": "string",
+      "description": "Assigned room ID"
+    },
+    "room_number": {
+      "type": "string",
+      "description": "Assigned room number"
+    },
+    "building_name": {
+      "type": "string",
+      "description": "Building name"
+    },
+    "site_name": {
+      "type": "string",
+      "description": "Site name"
+    },
+    "check_in_date": {
+      "type": "string",
+      "format": "date"
+    },
+    "check_out_date": {
+      "type": "string",
+      "format": "date"
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "active",
+        "checked_out"
+      ],
+      "default": "active"
+    },
+    "notes": {
+      "type": "string"
+    }
+  },
+  "required": [
+    "full_name",
+    "gender"
+  ]
+}

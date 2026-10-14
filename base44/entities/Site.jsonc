@@ -1,0 +1,38 @@
+{
+  "name": "Site",
+  "type": "object",
+  "properties": {
+    "name": {
+      "type": "string",
+      "description": "Site name"
+    },
+    "address": {
+      "type": "string",
+      "description": "Site address"
+    },
+    "city": {
+      "type": "string",
+      "description": "City"
+    },
+    "description": {
+      "type": "string",
+      "description": "Site description"
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "active",
+        "inactive",
+        "maintenance"
+      ],
+      "default": "active"
+    },
+    "capacity": {
+      "type": "number",
+      "description": "Total capacity"
+    }
+  },
+  "required": [
+    "name"
+  ]
+}

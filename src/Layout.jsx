@@ -7,6 +7,7 @@ import {
   Clock, Shield, Menu, ChevronRight, LogOut
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
+import SyncStatus from '@/components/ui-custom/SyncStatus';
 
 const navSections = [
   {
@@ -152,6 +153,7 @@ export default function Layout({ children, currentPageName }) {
         </div>
         <div className="p-4 md:p-6 lg:p-8">
           {children}
+          <SyncStatus />
         </div>
       </main>
     </div>
